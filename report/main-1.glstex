@@ -1,0 +1,23 @@
+\glsnoexpandfields
+\bibglstertiaryprefixlabel{tertiary.}
+\bibglsdualprefixlabel{dual.}
+\bibglsprimaryprefixlabel{}
+\providecommand{\bibglsseesep}{, }
+
+\providecommand{\bibglsseealsosep}{, }
+
+\providecommand{\bibglsaliassep}{, }
+
+\providecommand*{\bibglsflattenedhomograph}[2]{#1}
+\providecommand{\bibglsnewacronym}[4]{%
+  \newacronym[#2]{#1}{#3}{#4}%
+}
+
+\bibglsnewacronym{CPU}%
+{location={\glsnoidxdisplayloc{}{page}{glsnumberformat}{5}},
+sort={CPU|}}%
+{CPU}%
+{Central Processing Unit}
+\glsxtrfieldlistadd{CPU}{loclist}{\glsnoidxdisplayloc{}{page}{glsnumberformat}{5}}
+
+
