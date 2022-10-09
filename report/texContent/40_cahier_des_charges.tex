@@ -18,7 +18,7 @@ Les fonctions de service du circuit sont :
 \subsection{Utilisation du circuit}
 	
 Il s'agit ici de donner l'utilisation du circuit en présentant le schéma de câblage du contrôleur d'interruptions ainsi que la définition des signaux logiques d'entrées et sorties.
-L'IP à concevoir s'interface avec le bus de données, le bus d'adresses ainsi qu'un ensemble de signaux de temporisation et de contrôle.
+L'\gls{IP} à concevoir s'interface avec le bus de données, le bus d'adresses ainsi qu'un ensemble de signaux de temporisation et de contrôle.
 Il est possible de retrouver des signaux de temporisation comme le nWAIT et des signaux de contrôle comme le nRST ou le RnW.
 Leur rôle est présenté table (\ref{tab:sens_role_signaux}).
 	
@@ -43,8 +43,9 @@ La figure et le tableau suivant présentent les entrées et sorties du point de 
 	\includegraphics[width=1\linewidth]{figure/delimitation_systeme.png}
 	\caption{Entrées et sorties de l'IP à concevoir}
 	\label{fig:inout_ip}
-\end{figure}	
-	
+\end{figure}
+
+
 \begin{table}[H]
 	\centering
 	\begin{tabular}{|c|c|c|}
@@ -60,15 +61,22 @@ La figure et le tableau suivant présentent les entrées et sorties du point de 
 		d\_bus & Entrée et sortie & Bus de données\\
 		\hline
 		nCS\_IT & Entrée & Signal de sélection du périphérique en cas \\
-		& & de demande de lecture ou d'écriture\\
+		& & d'opérations de lecture ou d'écriture\\
 		\hline
-		nAS & Entrée & Signal indiquant la présence d'une valeur sur le bus d'adresse\\
+		nAS & Entrée & Signal indiquant la présence d'une valeur\\
+		& & sur le bus d'adresse\\
 		\hline
-		RnW & Entrée & Signal d'écriture ou de lecture\\
+		& & Signal d'écriture ou de lecture\\
+		RnW & Entrée & 0 : écriture\\
+		& & 1 : lecture\\
 		\hline
-		nBE0 & Entrée & \\
+		 & & Signal indiquant la structure de la mémoire\\
+		nBE0 & Entrée & 0 : little-endian\\
+		& & 1 : big-endian\\
 		\hline
-		nBE1 & Entrée & \\
+		& & Signal indiquant la taille de la donnée\\
+		nBE1 & Entrée & 0 : 8 bits\\
+		 & & 1 : 16 bits\\
 		\hline
 		 &  & Signal pour le processeur avertissant \\
 		nIT\_CPU & Sortie & qu'une interruption est demandée de la part d'un \\
@@ -118,7 +126,16 @@ La figure et le tableau suivant présentent les entrées et sorties du point de 
 	\label{tab:sens_role_signaux}
 \end{table}
 	
-Il s'agit d'un signal envoyé au CPU pour lui signaler une interruption de la part d'un périphérique afin qu'il arrête les tâches en cours et qu'il lise sur le bus de données l'adresse de la routine d'interruption à laquelle il doit brancher.
+Les noms des signaux présentent un suffixe n signifiant que ceux-ci sont actifs à l'état bas.
+Par exemple, le signal de sélection nCS\_IT est actif à l'état bas.
+Ainsi un signal de sélection à l'état logique 0 signifie que le contrôleur d'interruptions est sélectionné pour une opération de lecture ou d'écriture dans un des registres.
+
+
+Conventionner ces signaux comme actif à l'état bas n'est pas anodin.
+Historiquement, pour des anciennes technologies \gls{TTL}, les signaux actifs à l'état bas sont davantage robustes aux bruits.  
+À titre d'exemple, un signal de sélection CS actif à l'état haut sélectionne un périphérique lorsque celui-ci est à l'état logique 1.
+Pour des raisons purement physiques (glitch sur le signal, baisse de tension à cause de la résistivité des interconnexions, chute de l'alimentation à cause d'un fort tirage de courant), ce signal à l'état 1 peut passer à l'état de haute impédance Z voir même à l'état bas.
+Un tel problème causerait la perdre de données à lire où écrire mais plus généralement des problèmes de sécurité. 
 
 
 \subsection{Chronogrammes caractéristiques}

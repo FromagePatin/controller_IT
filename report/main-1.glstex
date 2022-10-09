@@ -20,4 +20,16 @@ sort={CPU|}}%
 {Central Processing Unit}
 \glsxtrfieldlistadd{CPU}{loclist}{\glsnoidxdisplayloc{}{page}{glsnumberformat}{5}}
 
+\bibglsnewacronym{IP}%
+{location={\glsnoidxdisplayloc{}{page}{glsnumberformat}{5}},
+sort={IP|}}%
+{IP}%
+{Intellectual property}
+\glsxtrfieldlistadd{IP}{loclist}{\glsnoidxdisplayloc{}{page}{glsnumberformat}{5}}
 
+\bibglsnewacronym{TTL}%
+{location={\glsnoidxdisplayloc{}{page}{glsnumberformat}{5}},
+sort={TTL|}}%
+{TTL}%
+{Transistor-transistor logic}
+\glsxtrfieldlistadd{TTL}{loclist}{\glsnoidxdisplayloc{}{page}{glsnumberformat}{5}}
