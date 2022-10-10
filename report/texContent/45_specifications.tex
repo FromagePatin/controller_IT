@@ -1,0 +1,18 @@
+\section{Spécifications}
+
+\subsection{Caractérisation de l'environnement}
+
+Il s'agit dans cette partie de caractériser l'environnement c'est-à-dire de d'identifier les entités interagissant avec le circuit à concevoir et décrire leur évolution à l'aide d'automates.
+L'environnement du circuit à concevoir est constitué de trois entités :
+
+\begin{itemize}
+	\item Le processeur
+	\item Le contrôleur mémoire fournissant le signal de sélection nCS\_IT.
+	\item Les 15 entités informant au contrôleur d'interruptions la présence d'une interruption.
+	Ce groupe d'entités est appelé "source d'interruptions".
+\end{itemize}
+
+L'ensemble processeur + contrôleur mémoire peut configurer le contrôleur d'interruptions et opérer des écritures et lectures au sein de ses registres. L'entité source d'interruptions envoie au circuit à concevoir la présence d'une interruption à traiter.
+
+
+\subsection{Entrées et sorties du composant}
