@@ -1,0 +1,12 @@
+\section{Etude de l'existent}
+
+\subsection*{ARM NVIC}
+% ARMv6M - DDI 0419E - ID070218 - B3.4 Nested Vectored Interrupt Controller, NVIC
+ARMv6-M supports level-sensitive and pulse-sensitive, a variant of an edge sensitive, interrupt behavior. This
+means that both level-sensitive and pulse-sensitive interrupts can be handled. Pulse interrupt sources must be held
+long enough to be sampled reliably by the processor clock to ensure they are latched and become pending. A
+subsequent pulse can add the pending state to an active interrupt, making the status of the interrupt active and
+pending. However, multiple pulses that occur during the active period only register as a single event for interrupt
+scheduling.
+
+\subsection*{RISCV ?}

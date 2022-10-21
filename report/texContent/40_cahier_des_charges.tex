@@ -162,6 +162,9 @@ La priorité par défaut de chaque entrée pourra également être modifiée.
 Le second type de communication a pour but de notifier le \gls{CPU} lors d'interruptions.
 Elles peuvent provenir des autres périphériques présents dans le microcontrôleur ou de sources externes.
 L'objectif est d'informer le processeur via le signal nIT\_CPU en suivant le régime de priorités.
+La politique de sensibilité du périphérique est l'état des signaux et non les fronts.
+La gestion d'une interruption commence lorsque le signal émmeteur passe à l'état bas et s'achève lorsque  qu'il passe à l'état haut. 
+L'état du signal doit être maintenu au minimum pendant un cyle d'horloge pour qu'il soit valide. %TODO valider si cette information n'est pas trop contraignante pour la conception du controlleur d'IT.
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{chrono_specif_IT.png}
@@ -169,10 +172,10 @@ L'objectif est d'informer le processeur via le signal nIT\_CPU en suivant le ré
 	\label{fig:spe_IT}
 \end{figure}
 Le chronogramme figure \ref{fig:spe_IT} illustre le cas d'un signal d'interruption provenant d'un périphérique et la séquence induite concernant le signal nIT\_CPU.
-Une demande d'interruption s'identifie par un front descendant de nIT\_xxx. 
-Après quelques cycles de traitement visant à confirmer la validité de la requête en consultant le registre de masquage, le processeur est informé, lui aussi, par un front descendant sur nIT\_CPU.
+Une demande d'interruption s'identifie par le passage à l'état bas de nIT\_xxx. 
+Après quelques cycles de traitement visant à confirmer la validité de la requête en consultant le registre de masquage, le processeur est informé, lui aussi, par le passage à l'état bas sur nIT\_CPU.
 Il sauvegarde alors le contexte et lit le registre de branchement.
-Cette action agit comme un \textbf{acquittement} et le signal nIT\_CPU est passé à l'état bas.
+Cette action agit comme un \textbf{acquittement} et le signal nIT\_CPU est passé à l'état haut.
 Le processeur se charge d'informer le périphérique émetteur, souvent à la fin de la routine, afin qu'il baisse le drapeau dans son registre d'état.
 Tant que cela n'est pas fait, aucune demande d'interruption de niveau inférieur ou égal ne sera transmis.
 Le chronogramme figure \ref{fig:spe_IT} illustre justement le cas d'une demande \textbf{moins prioritaire} qui apparaît durant l'exécution d'une première.
@@ -221,7 +224,7 @@ La section qui suit traite de la gestion du projet.
 Il s'agit de préciser la planification du projet avec des divers livrables à fournir à des dates précises.
 La figure (\ref{fig:planning}) ci-dessous est le plan de développement du projet.
 Les losanges bleus sont les jalons à fournir.
-La conception de cet IP a débuté le 5 octobre 2022 c'est-à-dire à la 40$^{\mbox{ème}}$ semaine de l'année.
+La conception de cet IP a débuté le 5 octobre 2022, c'est-à-dire à la 40$^{\mbox{ème}}$ semaine de l'année.
 Le rendu de l'IP et du rapport de conception s'effectuera la semaine 49.
 
 \begin{figure}[H]

@@ -72,6 +72,48 @@ La caractérisation de l'environnement sous forme d'automates donne les relation
 \end{table}
 
 \subsection{Spécifications fonctionnelles}
+Les spécifications fonctionnelles comprennent la liste des fonctions du système
+pour l'application (fonctions externes) et la description du comportement du système et
+de l'environnement pour ces fonctions \cite{Calvez_2}.
+
+\gap
+
+La fonction première du contrôleur d'interruption est d'informer le processeur lorsqu'une interruption valide survient.
+Une interruption valide est définie comme étant non masquée et de niveau suffisant pour être prise en compte.
+La gestion des niveaux de priorité est la seconde fonction à considérer. 
+Elle est directement induite par la première.
+Une interruption en cours ne peut être interrompue que par une interruption de niveau strictement supérieur.
+Lorsque le processeur acquitte la fin du traitement, les interruptions de niveaux inférieurs ou égaux peuvent être à nouveau considérées comme valides. 
+Le contrôleur fournir un niveau de priorité par défaut pour chaque source.
+La troisième fonction concerne le masquage des sources d'interruption individuellement.
+Une source masquée ne génèrera pas de signal au processeur.
+Un événement déjà en cours de traitement par le contrôleur ne pourra être masqué. %TODO à confirmer
+Si un signal d'interruption est généré alors qu'il est masqué, il est ignoré, mais s'il est démasqué alors qu'il est toujours actif alors il sera pris en compte. (\hl{A confirmer})
+La quatrième fonction principale spécifie le vecteur d'exception.
+Le contrôleur lorsque qu'il informe le processeur doit immédiatement lui indiquer vers quelle adresse il doit brancher.
+Il est possible de configurer une adresse par source.
+Sa configuration doit se faire lorsque le contrôleur est désactivé.
+Si aucune adresse n'est présente pour une source donnée alors une par défaut sera attribuée.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		nom & Description \\ \hline
+		fn1 & Informer le processeur \\ \hline
+		fn2 & Gérer les niveaux de priorité \\ \hline
+		fn3 & Masquer individuellement les sources \\ \hline
+		fn4 & Configurer le vecteur d'exception \\ \hline
+	\end{tabular}
+	\caption{Synthèse des spécifications fonctionnelles}
+	\label{tab:spe_funct}
+\end{table}
+
+Le tableau \ref{tab:spe_funct} synthétise les spécifications fonctionnelles. 
+Il permet de contrôler que chaque point est bien traité tout au long de la conception. 
+Il n'est cependant pas précis et devra être traité avec la description détaillée ci-dessus.
+
+
 \subsection{Spécification des registres}
 \subsection{Écriture des procédures de base pour l'emploi du circuit}
 \subsection{Spécifications opératoires}
