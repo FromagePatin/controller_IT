@@ -44,7 +44,7 @@ Ce signal reste actif jusqu'à la lecture du flag d'interruption de la part du p
 \subsection{Entrées et sorties du composant}
 
 La caractérisation de l'environnement sous forme d'automates donne les relations d'entrées et sorties du circuit à concevoir avec les diverses entités.
-
+Il est alors possible de présenter de manière structurelle le circuit à concevoir et les entités de l'environnement.
 
 \begin{figure}[H]
 	\centering
@@ -52,6 +52,14 @@ La caractérisation de l'environnement sous forme d'automates donne les relation
 	\caption{Entrées et sorties du circuit à concevoir}
 	\label{fig:entrees_sorties_composant}
 \end{figure} 
+
+La relation DataRd représente la donnée à lire par le processeur dans le registre de branchement du contrôleur d'interruptions.
+Un tel registre contient les valeurs des adresses à laquelle le processeur doit brancher pour accéder aux instructions des routines d'interruptions.
+DataRd est de type Def\_Data un tableau de Def\_Bit de taille NB\_BITS\_ADDR, avec Def\_bit valant 0 ou 1.
+Des registres de configuration sont présents au sein du contrôleur d'interruptions et sont utilisés pour configurer le périphérique (masquer ou démasquer les interruptions, établir le niveau de priorité).
+La relation ConfigWr représente la configuration à écrire et ConfigRd est la configuration à lire dans l'éventualité où l'utilisateur souhaite lire la configuration du périphérique.
+Ces relations sont de type Def\_Config, un tableau de Def\_Bit de taille NB\_BITS\_DATA. 
+Les valeurs NB\_BITS\_ADDR et NB\_BITS\_DATA sont respectivement la taille du bus d'adresses (22 bits) et du bus de données (16 bits).
 
 \begin{table}[H]
 	\centering
@@ -115,6 +123,21 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 
 
 \subsection{Spécification des registres}
+
+(\hl{Brouillon liste des registres :})\\
+- registre enable ou pas le contrôleur d'interruptions ?\\
+- registres vecteurs d'exceptions\\
+- ISER (interrupt set enable register) liste des périphériques si 1 interruption activée 0 sinon\\
+- ICER (interrupt clear enable register) registre pour disable une interruption\\
+- Registre des priorités
+
+Colle pas trop avec nos chronogrammes
+- ISPR (interrupt set pending register) 1 : une interruption en attente 0 sinon\\
+- ICPR (interrupt clear pending register)\\
+
 \subsection{Écriture des procédures de base pour l'emploi du circuit}
+
+(Du C à écrire (faire une lib low-level) je te laisse le plaisir de le faire)\\
+
 \subsection{Spécifications opératoires}
 \subsection{Spécifications technologiques}
