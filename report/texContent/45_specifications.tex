@@ -13,16 +13,17 @@ L'environnement du circuit à concevoir est constitué de trois entités :
 \end{itemize}
 
 L'ensemble processeur + contrôleur mémoire peut configurer le contrôleur d'interruptions et opérer des écritures et lectures au sein de ses registres.
+Cet ensemble sera par la suite nommé "système à microprocesseur".
 L'entité source d'interruptions envoie au circuit à concevoir la présence d'une interruption à traiter.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.8\linewidth]{figure/spec_automate_proc_ctrlmem.png}
-	\caption{Comportement de l'ensemble processeur + contrôleur mémoire}
-	\label{fig:spec_automate_proc_ctrlmem}
+	\caption{Comportement du système à microprocesseur}
+	\label{fig:spec_automate_sysmicro}
 \end{figure} 
 
-La figure ci-dessus représente le comportement de l'ensemble processeur + contrôleur mémoire.
+La figure ci-dessus représente le comportement de l'entité système à microprocesseur.
 Celui-ci possède trois cycles de fonctionnement.
 Le processeur peut opérer des cycles de lecture et d'écriture dans les registres du contrôleur d'interruptions.
 Le souhait d'écriture ou de lecture s'effectue par la mise à l'état bas du signal nCS\_IT.
@@ -53,13 +54,7 @@ Il est alors possible de présenter de manière structurelle le circuit à conce
 	\label{fig:entrees_sorties_composant}
 \end{figure} 
 
-La relation DataRd représente la donnée à lire par le processeur dans le registre de branchement du contrôleur d'interruptions.
-Un tel registre contient les valeurs des adresses à laquelle le processeur doit brancher pour accéder aux instructions des routines d'interruptions.
-DataRd est de type Def\_Data un tableau de Def\_Bit de taille NB\_BITS\_ADDR, avec Def\_bit valant 0 ou 1.
-Des registres de configuration sont présents au sein du contrôleur d'interruptions et sont utilisés pour configurer le périphérique (masquer ou démasquer les interruptions, établir le niveau de priorité).
-La relation ConfigWr représente la configuration à écrire et ConfigRd est la configuration à lire dans l'éventualité où l'utilisateur souhaite lire la configuration du périphérique.
-Ces relations sont de type Def\_Config, un tableau de Def\_Bit de taille NB\_BITS\_DATA. 
-Les valeurs NB\_BITS\_ADDR et NB\_BITS\_DATA sont respectivement la taille du bus d'adresses (22 bits) et du bus de données (16 bits).
+Le tableau ci-dessous récapitule les relations avec leur sens, leur catégorie et leur type.
 
 \begin{table}[H]
 	\centering
@@ -67,9 +62,10 @@ Les valeurs NB\_BITS\_ADDR et NB\_BITS\_DATA sont respectivement la taille du bu
 		\hline
 		Entités & Relation & Catégorie & Sens & Type\\
 		\hline
-		 & DataRd & Permanent & Sortie & Def\_Data \\
-		Processeur + contrôleur mémoire & ConfigWr & Permanent & Entrée & Def\_Config \\
-		& ConfigRd & Permanent & Sortie & Def\_Config \\
+		& Branch & Permanent & Sortie & Def\_Branch \\
+		& Ack\_Read & Évènementiel & Entrée & Def\_Ack \\
+		Système à microprocesseur & ConfigWr & Permanent & Entrée & Def\_ConfigWr \\
+		& ConfigRd & Permanent & Sortie & Def\_ConfigRd \\
 		& IT\_CPU & Permanent & Sortie & Def\_IT\\
 		\hline
 		Source d'interruptions [1:15] & IT [1:15] & Permanent & Entrée & Def\_IT\\
@@ -78,6 +74,73 @@ Les valeurs NB\_BITS\_ADDR et NB\_BITS\_DATA sont respectivement la taille du bu
 	\caption{Sens et rôle des signaux}
 	\label{tab:entrees_sorties_composant}
 \end{table}
+
+La relation Ack\_Read est de type Def\_Ack, une donnée de type booléen (true : la lecture de l'adresse de branchement est terminée, false sinon).
+IT[1:15] est un tableau de 15 éléments de type Def\_IT, une donnée de type booléen (true : une interruption est reçu de la part de n-ième l'IP, false sinon).
+IT\_CPU est également de type Def\_IT (true : une interruption doit être traitée par le CPU, false sinon).
+Chaque autre relation est une composition de sous-relations comme définie ci-après.
+
+\begin{equation*}
+\mbox{Branch} = \big[ \mbox{ ID } | \mbox{ @blx } \big]
+\end{equation*}
+
+\begin{equation*}
+\mbox{ConfigWr} = \big[ \mbox{ @blx } | \mbox{ priorité } | \mbox{ masque } \big]
+\end{equation*}
+
+\begin{equation*}
+\mbox{ConfigRd} = \big[ \mbox{ ID } | \mbox{ @blx } | \mbox{ priorité } | \mbox{ masque } | \mbox{ pending } | \mbox{ traitement } \big]
+\end{equation*}
+
+ID représente l'identifiant de l'interruption.
+@blx est la sous-relation qui précise l'adresse de branchement de la sous-routine de l'interruption à traiter.
+La relation priorité indique la priorité attribuée pour une interruption, masque précise si l'interruption est masquée ou non.
+En ce qui concerne pending, il s'agit d'une sous-relation qui informe si une interruption est mise en attente pour être traitée ultérieurement.
+Enfin, traitement prends en compte si une interruption a déjà été traitée ou non avant que celle-ci soit clear par l'IP concernée.
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Sous-relation & Type & Donnée \\
+		\hline
+		& & Entier de 0 à 15\\
+		ID & Def\_ID & 0 : Idle\\
+		& & 1-15 : IT\\
+		\hline
+		& & \\
+		@blx & Def\_@blx & Entier de 0 à 4 194 303\\
+		& & \\
+		\hline
+		& & Entier de 0 à 8\\
+		priorité & Def\_priorité & 8 : Idle\\
+		& & 0 : le plus prioritaire\\
+		& & 7 : le moins prioritaire\\
+		\hline
+		& & Booléen\\
+		masque & Def\_masque & true : IT masquée (prise en compte)\\
+		& & false : non masquée\\
+		\hline
+		& & Booléen\\
+		pending & Def\_pending & true : IT mise en attente\\
+		& & false sinon\\
+		\hline
+		& & Booléen\\
+		traitement & Def\_traitement & true : IT à traiter\\
+		& & false : IT déjà traitée\\
+		\hline
+	\end{tabular}
+	\caption{Sous-relations et type de données}
+	\label{tab:sous-relation}
+\end{table}
+
+Il est possible d'introduire une relation interne nommée infoIT. Le k-ième élément de infoIT correspond à la k-ième interruption, c'est-à-dire la valeur de ID. Cet indice k varie de 0 (Idle) à 15 (1-15 représentant les 15 interruptions).
+
+\begin{equation*}
+	\mbox{infoIT[k]} = \big[ \mbox{ ID } | \mbox{ priorité } | \mbox{ masque } | \mbox{ pending } | \mbox{ traitement }\big]
+\end{equation*}
+
+\newpage
 
 \subsection{Spécifications fonctionnelles}
 Les spécifications fonctionnelles comprennent la liste des fonctions du système
@@ -121,19 +184,78 @@ Le tableau \ref{tab:spe_funct} synthétise les spécifications fonctionnelles.
 Il permet de contrôler que chaque point est bien traité tout au long de la conception. 
 Il n'est cependant pas précis et devra être traité avec la description détaillée ci-dessus.
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{figure/spec_fonc_1.png}
+	\caption{Premier automate du contrôleur d'interruptions}
+	\label{fig:spec_func_1}
+\end{figure} 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{figure/spec_fonc_2.png}
+	\caption{Second automate du contrôleur d'interruptions}
+	\label{fig:spec_func_2}
+\end{figure} 
 
 \subsection{Spécification des registres}
 
-(\hl{Brouillon liste des registres :})\\
-- registre enable ou pas le contrôleur d'interruptions ?\\
-- registres vecteurs d'exceptions\\
-- ISER (interrupt set enable register) liste des périphériques si 1 interruption activée 0 sinon\\
-- ICER (interrupt clear enable register) registre pour disable une interruption\\
-- Registre des priorités
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		ID & Interruptions correspondantes \\
+		\hline
+		0 & Idle\\
+		\hline
+		1 & nIT\_ext0\\
+		\hline
+		2 & nIT\_ext1\\
+		\hline
+		3 & nIT\_ext2\\
+		\hline
+		4 & nIT\_ext3\\
+		\hline
+		5 & nIT\_RTC\\
+		\hline
+		6 & nIT\_TC\_PWM\\
+		\hline
+		7 & nIT\_pos\_vit\\
+		\hline
+		8 & nIT\_FFTA\\
+		\hline
+		9 & nIT\_NNA\\
+		\hline
+		10 & nIT\_SPI\\
+		\hline
+		11 & nIT\_PCI\\
+		\hline
+		12 & nIT\_UART\\
+		\hline
+		13 & nIT\_I2C\\
+		\hline
+		14 & nIT\_CAN\\
+		\hline
+		15 & nIT\_DMA\\
+		\hline
+	\end{tabular}
+	\caption{Vecteurs d'interruptions}
+	\label{tab:vec_int}
+\end{table}
 
-Colle pas trop avec nos chronogrammes
-- ISPR (interrupt set pending register) 1 : une interruption en attente 0 sinon\\
-- ICPR (interrupt clear pending register)\\
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{figure/plan_registres.png}
+	\caption{Organisation des registres internes}
+	\label{fig:plan_registres}
+\end{figure} 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{figure/plan_branchement.png}
+	\caption{Organisation du registre de branchement}
+	\label{fig:plan_branchement}
+\end{figure} 
 
 \subsection{Écriture des procédures de base pour l'emploi du circuit}
 
