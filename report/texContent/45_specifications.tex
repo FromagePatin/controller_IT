@@ -231,6 +231,18 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 	\label{tab:vec_int}
 \end{table}
 
+
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=0.9\linewidth]{figure/spec_fonc_2.png}
+%	\caption{Second automate du contrôleur d'interruptions}
+%	\label{fig:spec_func_2}
+%\end{figure} 
+
+
+\subsection{Spécification des registres}
+\newpage
+
 \begin{table}[H]
 	\centering
 	\begin{tabular}{llllll}
@@ -373,17 +385,8 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 \end{table}
 
 
+
 \begin{table}[H]
-%\begin{figure}[H]
-%	\centering
-%	\includegraphics[width=0.9\linewidth]{figure/spec_fonc_2.png}
-%	\caption{Second automate du contrôleur d'interruptions}
-%	\label{fig:spec_func_2}
-%\end{figure} 
-
-\subsection{Spécification des registres}
-
-\begin{figure}[H]
 	\centering
 	\begin{tabular}{lll}
 		\toprule
@@ -418,7 +421,6 @@ Elle n'est cependant pas optimale pour l'occupation mémoire qui passe au second
 
 
 
-\newpage
 \subsection{Écriture des procédures de base pour l'emploi du circuit}
 
 \begin{lstlisting}[style=CStyle]
@@ -438,7 +440,7 @@ Elle n'est cependant pas optimale pour l'occupation mémoire qui passe au second
 	}CTRL_IT_PRIO_t;
 	#pragma pack(pop)
 
-	#pragma pack(push, 43)
+	#pragma pack(push, 53)
 	typedef struct {
 		uint16_t CTRL_IT_EN;	/* size : 2 */
 		uint16_t CTRL_IT_MSK;	/* size : 2 */
@@ -473,7 +475,7 @@ void CTRL_IT_init_UART(void)
     CTRL_IT->CTRL_IT_EN = 0x0001;
 }
 \end{lstlisting}
-Les deux procédures ci-dessus présentent un exemple d'initialisation du périphérique pour le channal UART.
+Les deux procédures ci-dessus présentent un exemple d'initialisation du périphérique pour le canal UART.
 
 \subsection{Spécifications opératoires}
 \subsection{Spécifications technologiques}
