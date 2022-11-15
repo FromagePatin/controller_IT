@@ -81,15 +81,15 @@ IT\_CPU est également de type Def\_IT (true : une interruption doit être trait
 Chaque autre relation est une composition de sous-relations comme définie ci-après.
 
 \begin{equation*}
-	\mbox{Branch} = \big[ \mbox{ ID } | \mbox{ @blx } \big]
+\mbox{Branch} = \mbox{ ID } + \mbox{ @blx }
 \end{equation*}
 
 \begin{equation*}
-	\mbox{ConfigWr} = \big[ \mbox{ @blx } | \mbox{ priorité } | \mbox{ masque } \big]
+\mbox{ConfigWr} = \mbox{ @blx } + \mbox{ priorité } + \mbox{ masque }
 \end{equation*}
 
 \begin{equation*}
-	\mbox{ConfigRd} = \big[ \mbox{ ID } | \mbox{ @blx } | \mbox{ priorité } | \mbox{ masque } | \mbox{ pending } | \mbox{ traitement } \big]
+\mbox{ConfigRd} = \mbox{ ID } + \mbox{ @blx } + \mbox{ priorité } + \mbox{ masque } + \mbox{ pending } + \mbox{ traitement }
 \end{equation*}
 
 ID représente l'identifiant de l'interruption.
@@ -104,18 +104,17 @@ Enfin, traitement prends en compte si une interruption a déjà été traitée o
 		\hline
 		Sous-relation & Type            & Donnée                              \\
 		\hline
-		              &                 & Entier de 0 à 15                    \\
-		ID            & Def\_ID         & 0 : Idle                            \\
-		              &                 & 1-15 : IT                           \\
+		& & \\
+		ID & Def\_ID & Entier de 0 à 14\\
+		& & \\
 		\hline
-		              &                 &                                     \\
-		@blx          & Def\_@blx       & Entier de 0 à 4 194 303             \\
-		              &                 &                                     \\
+		& & \\
+		@blx & Def\_@blx & Entier de 0 à $2^{22}-1$\\
+		& & \\
 		\hline
-		              &                 & Entier de 0 à 8                     \\
-		priorité      & Def\_priorité   & 8 : Idle                            \\
-		              &                 & 0 : le plus prioritaire             \\
-		              &                 & 7 : le moins prioritaire            \\
+		& & Entier de 0 à 7\\
+		priorité & Def\_priorité & 0 : le plus prioritaire\\
+		& & 7 : le moins prioritaire\\
 		\hline
 		              &                 & Booléen                             \\
 		masque        & Def\_masque     & true : IT masquée (prise en compte) \\
@@ -134,10 +133,10 @@ Enfin, traitement prends en compte si une interruption a déjà été traitée o
 	\label{tab:sous-relation}
 \end{table}
 
-Il est possible d'introduire une relation interne nommée infoIT. Le k-ième élément de infoIT correspond à la k-ième interruption, c'est-à-dire la valeur de ID. Cet indice k varie de 0 (Idle) à 15 (1-15 représentant les 15 interruptions).
+Il est possible d'introduire une relation interne nommée infoIT. Le k-ième élément de infoIT correspond à la k-ième interruption, c'est-à-dire la valeur de ID. Cet indice k varie de 0 à 14 (0-14 représentant les 15 interruptions).
 
 \begin{equation*}
-	\mbox{infoIT[k]} = \big[ \mbox{ ID } | \mbox{ priorité } | \mbox{ masque } | \mbox{ pending } | \mbox{ traitement }\big]
+	\mbox{infoIT[k]} = \mbox{ ID } + \mbox{ priorité } + \mbox{ masque } + \mbox{ pending } + \mbox{ traitement }
 \end{equation*}
 
 \newpage
@@ -186,57 +185,46 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.9\linewidth]{figure/spec_fonc_1.png}
-	\caption{Premier automate du contrôleur d'interruptions}
+	\includegraphics[width=1\linewidth]{figure/spec_fonc_1.png}
+	\caption{Automate du contrôleur d'interruptions}
 	\label{fig:spec_func_1}
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.9\linewidth]{figure/spec_fonc_2.png}
-	\caption{Second automate du contrôleur d'interruptions}
-	\label{fig:spec_func_2}
-\end{figure}
-
-\subsection{Spécification des registres}
-
 \begin{table}[H]
 	\centering
-	\begin{tabular}{|c|c|}
+	\begin{tabular}{|c|c|c|}
 		\hline
-		ID & Interruptions correspondantes \\
+		ID & Interruptions correspondantes & Adresses de branchement par défaut\\
 		\hline
-		0  & Idle                          \\
+		0 & nIT\_ext0 & \\
 		\hline
-		1  & nIT\_ext0                     \\
+		1 & nIT\_ext1 & \\
 		\hline
-		2  & nIT\_ext1                     \\
+		2 & nIT\_ext2 & \\
 		\hline
-		3  & nIT\_ext2                     \\
+		3 & nIT\_ext3 &\\
 		\hline
-		4  & nIT\_ext3                     \\
+		4 & nIT\_RTC &\\
 		\hline
-		5  & nIT\_RTC                      \\
+		5 & nIT\_TC\_PWM &\\
 		\hline
-		6  & nIT\_TC\_PWM                  \\
+		6 & nIT\_pos\_vit &\\
 		\hline
-		7  & nIT\_pos\_vit                 \\
+		7 & nIT\_FFTA &\\
 		\hline
-		8  & nIT\_FFTA                     \\
+		8 & nIT\_NNA &\\
 		\hline
-		9  & nIT\_NNA                      \\
+		9 & nIT\_SPI &\\
 		\hline
-		10 & nIT\_SPI                      \\
+		10 & nIT\_PCI &\\
 		\hline
-		11 & nIT\_PCI                      \\
+		11 & nIT\_UART &\\
 		\hline
-		12 & nIT\_UART                     \\
+		12 & nIT\_I2C &\\
 		\hline
-		13 & nIT\_I2C                      \\
+		13 & nIT\_CAN &\\
 		\hline
-		14 & nIT\_CAN                      \\
-		\hline
-		15 & nIT\_DMA                      \\
+		14 & nIT\_DMA &\\
 		\hline
 	\end{tabular}
 	\caption{Vecteurs d'interruptions}
@@ -386,6 +374,16 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 
 
 \begin{table}[H]
+%\begin{figure}[H]
+%	\centering
+%	\includegraphics[width=0.9\linewidth]{figure/spec_fonc_2.png}
+%	\caption{Second automate du contrôleur d'interruptions}
+%	\label{fig:spec_func_2}
+%\end{figure} 
+
+\subsection{Spécification des registres}
+
+\begin{figure}[H]
 	\centering
 	\begin{tabular}{lll}
 		\toprule
