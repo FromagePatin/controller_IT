@@ -74,12 +74,12 @@ _CTRL_IT_init_UART:
 	.set ___PA___,0
 	.size	_CTRL_IT_init_UART, .-_CTRL_IT_init_UART
 	.global	_CTRL_IT	; export
-	.section	.nbss,bss,near
+	.section	.ndata,data,near
 	.align	2
 	.type	_CTRL_IT,@object
 	.size	_CTRL_IT, 2
 _CTRL_IT:
-	.skip	2
+	.word	-3856
 
 
 

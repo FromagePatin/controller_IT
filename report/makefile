@@ -11,8 +11,8 @@ draw_target = $(draw_src:./figure/%.draw.svg=./figure/%.draw.png)
 	$(LATEX_CMD)
 	bibtex ./$(OUT_DIR)/$(SOURCE)
 	bib2gls ./$(OUT_DIR)/$(SOURCE)
-	$(LATEX_CMD)
-	$(LATEX_CMD)
+#	$(LATEX_CMD)
+#	$(LATEX_CMD)
 	mv ./temp/main.pdf ./main.pdf
 
 ./figure/%.draw.png: ./figure/%.draw.svg

@@ -9,6 +9,7 @@
 \usepackage{graphicx}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage{xcolor}
 \usepackage{float}
 \graphicspath{ {./figure/} }
 \usepackage{soul}
@@ -25,39 +26,44 @@
 %\lstset{language=Matlab}          % Set your language (you can change the language for each code-block optionally)
 %\lstset{language=C}
 
-
+\usepackage{multicol}
+\usepackage{array}
+% Gray horizontal lines for tables 
+\usepackage{colortbl}
+% Space between lines for tables
+\usepackage{booktabs}
+\newcommand{\rhline}{\midrule[0.1mm]}% \addlinespace[1ex]\arrayrulecolor{gray}\hline\arrayrulecolor{black}\addlinespace[1ex]}
 
 %% User style for C
 
-% \usepackage{color}
+ \usepackage{color}
 % \usepackage{xcolor}
 
-% \definecolor{mGreen}{rgb}{0,0.6,0}
-% \definecolor{mGray}{rgb}{0.5,0.5,0.5}
-% \definecolor{mPurple}{rgb}{0.58,0,0.82}
-% \definecolor{backgroundColour}{rgb}{0.95,0.95,0.95}
+\definecolor{mGreen}{rgb}{0,0.6,0}
+\definecolor{mGray}{rgb}{0.5,0.5,0.5}
+\definecolor{mPurple}{rgb}{0.58,0,0.82}
+\definecolor{backgroundColour}{rgb}{0.95,0.95,0.95}
 
-% \lstdefinestyle{CStyle}{
-%     language=C,
-%     tabsize=4,
-%     captionpos=b,
-%     numbers=left,
-%     commentstyle=\color{mGreen},
-%     backgroundcolor=\color{white},
-%     numberstyle=\color{gray},
-%     keywordstyle=\color{blue} \textbf,%otherkeywords={xdata},
-%     keywords=[2]{xdata},
-%     keywordstyle=[2]\color{red}\textbf,
-%     identifierstyle=\color{black},
-%     stringstyle=\color{red}\ttfamily,
-%     basicstyle = \ttfamily \color{black} \footnotesize,
-%     inputencoding=utf8/latin1,
-%     showstringspaces=false,
-%     frame=single,
-%     morekeywords={uint32_t, uint16_t, uint8_t, Tc, Dac, Port, inline, state_t,
-%     uticks_t, atomic, endatomic,
-%     @brief}
-% }
+\lstdefinestyle{CStyle}{
+    language=C,
+    tabsize=4,
+    captionpos=b,
+    numbers=left,
+    commentstyle=\color{mGreen},
+    backgroundcolor=\color{white},
+    numberstyle=\color{gray},
+    keywordstyle=\color{blue} \textbf,%otherkeywords={xdata},
+    keywords=[2]{xdata},
+    keywordstyle=[2]\color{red}\textbf,
+    identifierstyle=\color{black},
+    stringstyle=\color{red}\ttfamily,
+    basicstyle = \ttfamily \color{black} \footnotesize,
+    inputencoding=utf8/latin1,
+    showstringspaces=false,
+    frame=single,
+    morekeywords={uint32_t, uint16_t, uint8_t, inline, state_t,
+    uticks_t, atomic, endatomic, @brief, CTRL_IT_t, ID_IT_t}
+}
 
 
 

@@ -9,7 +9,7 @@ L'environnement du circuit à concevoir est constitué de trois entités :
 	\item Le processeur
 	\item Le contrôleur mémoire fournissant le signal de sélection nCS\_IT.
 	\item Les 15 entités informant au contrôleur d'interruptions la présence d'une interruption.
-	Ce groupe d'entités est appelé "source d'interruptions".
+	      Ce groupe d'entités est appelé "source d'interruptions".
 \end{itemize}
 
 L'ensemble processeur + contrôleur mémoire peut configurer le contrôleur d'interruptions et opérer des écritures et lectures au sein de ses registres.
@@ -21,14 +21,14 @@ L'entité source d'interruptions envoie au circuit à concevoir la présence d'u
 	\includegraphics[width=0.8\linewidth]{figure/spec_automate_proc_ctrlmem.png}
 	\caption{Comportement du système à microprocesseur}
 	\label{fig:spec_automate_sysmicro}
-\end{figure} 
+\end{figure}
 
 La figure ci-dessus représente le comportement de l'entité système à microprocesseur.
 Celui-ci possède trois cycles de fonctionnement.
 Le processeur peut opérer des cycles de lecture et d'écriture dans les registres du contrôleur d'interruptions.
 Le souhait d'écriture ou de lecture s'effectue par la mise à l'état bas du signal nCS\_IT.
 La fin de ces cycles est notifiée par la mise à l'état haut du signal nAS.
-Le terme "données" peut signifier la valeur des registres de configuration et également l'adresse de branchements.\\ 
+Le terme "données" peut signifier la valeur des registres de configuration et également l'adresse de branchements.\\
 
 
 \begin{figure}[H]
@@ -36,7 +36,7 @@ Le terme "données" peut signifier la valeur des registres de configuration et �
 	\includegraphics[width=0.5\linewidth]{figure/spec_automate_src_int.png}
 	\caption{Comportement de l'entité source d'interruptions}
 	\label{fig:spec_automate_src_it}
-\end{figure} 
+\end{figure}
 
 La figure ci-dessus est l'automate de l'entité source d'interruptions.
 Lorsque la condition d'interruption est valide, le périphérique génère un signal en direction du contrôleur d'interruptions.
@@ -52,7 +52,7 @@ Il est alors possible de présenter de manière structurelle le circuit à conce
 	\includegraphics[width=1\linewidth]{figure/entrees_sorties_composant.png}
 	\caption{Entrées et sorties du circuit à concevoir}
 	\label{fig:entrees_sorties_composant}
-\end{figure} 
+\end{figure}
 
 Le tableau ci-dessous récapitule les relations avec leur sens, leur catégorie et leur type.
 
@@ -60,15 +60,15 @@ Le tableau ci-dessous récapitule les relations avec leur sens, leur catégorie 
 	\centering
 	\begin{tabular}{|c|c|c|c|c|}
 		\hline
-		Entités & Relation & Catégorie & Sens & Type\\
+		Entités                       & Relation  & Catégorie    & Sens   & Type          \\
 		\hline
-		& Branch & Permanent & Sortie & Def\_Branch \\
-		& Ack\_Read & Évènementiel & Entrée & Def\_Ack \\
-		Système à microprocesseur & ConfigWr & Permanent & Entrée & Def\_ConfigWr \\
-		& ConfigRd & Permanent & Sortie & Def\_ConfigRd \\
-		& IT\_CPU & Permanent & Sortie & Def\_IT\\
+		                              & Branch    & Permanent    & Sortie & Def\_Branch   \\
+		                              & Ack\_Read & Évènementiel & Entrée & Def\_Ack      \\
+		Système à microprocesseur     & ConfigWr  & Permanent    & Entrée & Def\_ConfigWr \\
+		                              & ConfigRd  & Permanent    & Sortie & Def\_ConfigRd \\
+		                              & IT\_CPU   & Permanent    & Sortie & Def\_IT       \\
 		\hline
-		Source d'interruptions [1:15] & IT [1:15] & Permanent & Entrée & Def\_IT\\
+		Source d'interruptions [1:15] & IT [1:15] & Permanent    & Entrée & Def\_IT       \\
 		\hline
 	\end{tabular}
 	\caption{Sens et rôle des signaux}
@@ -81,15 +81,15 @@ IT\_CPU est également de type Def\_IT (true : une interruption doit être trait
 Chaque autre relation est une composition de sous-relations comme définie ci-après.
 
 \begin{equation*}
-\mbox{Branch} = \big[ \mbox{ ID } | \mbox{ @blx } \big]
+	\mbox{Branch} = \big[ \mbox{ ID } | \mbox{ @blx } \big]
 \end{equation*}
 
 \begin{equation*}
-\mbox{ConfigWr} = \big[ \mbox{ @blx } | \mbox{ priorité } | \mbox{ masque } \big]
+	\mbox{ConfigWr} = \big[ \mbox{ @blx } | \mbox{ priorité } | \mbox{ masque } \big]
 \end{equation*}
 
 \begin{equation*}
-\mbox{ConfigRd} = \big[ \mbox{ ID } | \mbox{ @blx } | \mbox{ priorité } | \mbox{ masque } | \mbox{ pending } | \mbox{ traitement } \big]
+	\mbox{ConfigRd} = \big[ \mbox{ ID } | \mbox{ @blx } | \mbox{ priorité } | \mbox{ masque } | \mbox{ pending } | \mbox{ traitement } \big]
 \end{equation*}
 
 ID représente l'identifiant de l'interruption.
@@ -102,32 +102,32 @@ Enfin, traitement prends en compte si une interruption a déjà été traitée o
 	\centering
 	\begin{tabular}{|c|c|c|}
 		\hline
-		Sous-relation & Type & Donnée \\
+		Sous-relation & Type            & Donnée                              \\
 		\hline
-		& & Entier de 0 à 15\\
-		ID & Def\_ID & 0 : Idle\\
-		& & 1-15 : IT\\
+		              &                 & Entier de 0 à 15                    \\
+		ID            & Def\_ID         & 0 : Idle                            \\
+		              &                 & 1-15 : IT                           \\
 		\hline
-		& & \\
-		@blx & Def\_@blx & Entier de 0 à 4 194 303\\
-		& & \\
+		              &                 &                                     \\
+		@blx          & Def\_@blx       & Entier de 0 à 4 194 303             \\
+		              &                 &                                     \\
 		\hline
-		& & Entier de 0 à 8\\
-		priorité & Def\_priorité & 8 : Idle\\
-		& & 0 : le plus prioritaire\\
-		& & 7 : le moins prioritaire\\
+		              &                 & Entier de 0 à 8                     \\
+		priorité      & Def\_priorité   & 8 : Idle                            \\
+		              &                 & 0 : le plus prioritaire             \\
+		              &                 & 7 : le moins prioritaire            \\
 		\hline
-		& & Booléen\\
-		masque & Def\_masque & true : IT masquée (prise en compte)\\
-		& & false : non masquée\\
+		              &                 & Booléen                             \\
+		masque        & Def\_masque     & true : IT masquée (prise en compte) \\
+		              &                 & false : non masquée                 \\
 		\hline
-		& & Booléen\\
-		pending & Def\_pending & true : IT mise en attente\\
-		& & false sinon\\
+		              &                 & Booléen                             \\
+		pending       & Def\_pending    & true : IT mise en attente           \\
+		              &                 & false sinon                         \\
 		\hline
-		& & Booléen\\
-		traitement & Def\_traitement & true : IT à traiter\\
-		& & false : IT déjà traitée\\
+		              &                 & Booléen                             \\
+		traitement    & Def\_traitement & true : IT à traiter                 \\
+		              &                 & false : IT déjà traitée             \\
 		\hline
 	\end{tabular}
 	\caption{Sous-relations et type de données}
@@ -151,10 +151,10 @@ de l'environnement pour ces fonctions \cite{Calvez_2}.
 
 La fonction première du contrôleur d'interruption est d'informer le processeur lorsqu'une interruption valide survient.
 Une interruption valide est définie comme étant non masquée et de niveau suffisant pour être prise en compte.
-La gestion des niveaux de priorité est la seconde fonction à considérer. 
+La gestion des niveaux de priorité est la seconde fonction à considérer.
 Elle est directement induite par la première.
 Une interruption en cours ne peut être interrompue que par une interruption de niveau strictement supérieur.
-Lorsque le processeur acquitte la fin du traitement, les interruptions de niveaux inférieurs ou égaux peuvent être à nouveau considérées comme valides. 
+Lorsque le processeur acquitte la fin du traitement, les interruptions de niveaux inférieurs ou égaux peuvent être à nouveau considérées comme valides.
 Le contrôleur fournir un niveau de priorité par défaut pour chaque source.
 La troisième fonction concerne le masquage des sources d'interruption individuellement.
 Une source masquée ne génèrera pas de signal au processeur.
@@ -170,18 +170,18 @@ Si aucune adresse n'est présente pour une source donnée alors une par défaut 
 	\centering
 	\begin{tabular}{|c|c|}
 		\hline
-		nom & Description \\ \hline
-		fn1 & Informer le processeur \\ \hline
-		fn2 & Gérer les niveaux de priorité \\ \hline
+		nom & Description                          \\ \hline
+		fn1 & Informer le processeur               \\ \hline
+		fn2 & Gérer les niveaux de priorité        \\ \hline
 		fn3 & Masquer individuellement les sources \\ \hline
-		fn4 & Configurer le vecteur d'exception \\ \hline
+		fn4 & Configurer le vecteur d'exception    \\ \hline
 	\end{tabular}
 	\caption{Synthèse des spécifications fonctionnelles}
 	\label{tab:spe_funct}
 \end{table}
 
-Le tableau \ref{tab:spe_funct} synthétise les spécifications fonctionnelles. 
-Il permet de contrôler que chaque point est bien traité tout au long de la conception. 
+Le tableau \ref{tab:spe_funct} synthétise les spécifications fonctionnelles.
+Il permet de contrôler que chaque point est bien traité tout au long de la conception.
 Il n'est cependant pas précis et devra être traité avec la description détaillée ci-dessus.
 
 \begin{figure}[H]
@@ -189,14 +189,14 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 	\includegraphics[width=0.9\linewidth]{figure/spec_fonc_1.png}
 	\caption{Premier automate du contrôleur d'interruptions}
 	\label{fig:spec_func_1}
-\end{figure} 
+\end{figure}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{figure/spec_fonc_2.png}
 	\caption{Second automate du contrôleur d'interruptions}
 	\label{fig:spec_func_2}
-\end{figure} 
+\end{figure}
 
 \subsection{Spécification des registres}
 
@@ -206,60 +206,276 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 		\hline
 		ID & Interruptions correspondantes \\
 		\hline
-		0 & Idle\\
+		0  & Idle                          \\
 		\hline
-		1 & nIT\_ext0\\
+		1  & nIT\_ext0                     \\
 		\hline
-		2 & nIT\_ext1\\
+		2  & nIT\_ext1                     \\
 		\hline
-		3 & nIT\_ext2\\
+		3  & nIT\_ext2                     \\
 		\hline
-		4 & nIT\_ext3\\
+		4  & nIT\_ext3                     \\
 		\hline
-		5 & nIT\_RTC\\
+		5  & nIT\_RTC                      \\
 		\hline
-		6 & nIT\_TC\_PWM\\
+		6  & nIT\_TC\_PWM                  \\
 		\hline
-		7 & nIT\_pos\_vit\\
+		7  & nIT\_pos\_vit                 \\
 		\hline
-		8 & nIT\_FFTA\\
+		8  & nIT\_FFTA                     \\
 		\hline
-		9 & nIT\_NNA\\
+		9  & nIT\_NNA                      \\
 		\hline
-		10 & nIT\_SPI\\
+		10 & nIT\_SPI                      \\
 		\hline
-		11 & nIT\_PCI\\
+		11 & nIT\_PCI                      \\
 		\hline
-		12 & nIT\_UART\\
+		12 & nIT\_UART                     \\
 		\hline
-		13 & nIT\_I2C\\
+		13 & nIT\_I2C                      \\
 		\hline
-		14 & nIT\_CAN\\
+		14 & nIT\_CAN                      \\
 		\hline
-		15 & nIT\_DMA\\
+		15 & nIT\_DMA                      \\
 		\hline
 	\end{tabular}
 	\caption{Vecteurs d'interruptions}
 	\label{tab:vec_int}
 \end{table}
 
-\begin{figure}[H]
+\begin{table}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{figure/plan_registres.png}
-	\caption{Organisation des registres internes}
-	\label{fig:plan_registres}
-\end{figure} 
+	\begin{tabular}{llllll}
+		\hline
+		\addlinespace[1ex] %Space between lines for tables
+		\textbf{Adresse}     & \textbf{Nom}           & \textbf{Type} & \textbf{Reset} & \textbf{Description}                 \\
+		\rhline
+		\texttt{0x00000000}  & CTRL\_IT\_EN           & RW            & 0x0000         & Registre activation contrôlleur d'IT \\
+		\rhline
+		\texttt{0x00000002}  & CTRL\_IT\_MSQ          & RW            & 0x0000         & Registre de masquage                 \\
+		\rhline
+		\texttt{0x00000004}  & CTRL\_IT\_PEND         & R             & 0x0000         & Registre IT suspendues (pending)     \\
+		\rhline
+		\texttt{0x00000006-} & CTRL\_IT\_BRA          & R             & 0x0000         & Registre de branchement              \\
+		\texttt{0x00000008}  &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x0000000A-} & CTRL\_IT\_ADDR\_0      & RW            & 0x0000         & Adresses de branchement ch 0         \\
+		{0x0000000C}         &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x0000000E-} & CTRL\_IT\_ADDR\_1      & RW            & 0x0000         & Adresses de branchement ch 1         \\
+		{0x00000010}         &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x00000012-} & CTRL\_IT\_ADDR\_2      & RW            & 0x0000         & Adresses de branchement ch 2         \\
+		{0x000000014}        &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x00000016-} & CTRL\_IT\_ADDR\_3      & RW            & 0x0000         & Adresses de branchement ch 3         \\
+		{0x000000018}        &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x0000001A-} & CTRL\_IT\_ADDR\_4      & RW            & 0x0000         & Adresses de branchement ch 4         \\
+		{0x0000001C}         &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x0000001E-} & CTRL\_IT\_ADDR\_5      & RW            & 0x0000         & Adresses de branchement ch 5         \\
+		{0x00000020}         &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x00000022-} & CTRL\_IT\_ADDR\_6      & RW            & 0x0000         & Adresses de branchement ch 6         \\
+		{0x000000024}        &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x00000026-} & CTRL\_IT\_ADDR\_7      & RW            & 0x0000         & Adresses de branchement ch 7         \\
+		{0x00000028}         &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x0000002A-} & CTRL\_IT\_ADDR\_8      & RW            & 0x0000         & Adresses de branchement ch 8         \\
+		{0x0000002C}         &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x0000002E-} & CTRL\_IT\_ADDR\_9      & RW            & 0x0000         & Adresses de branchement ch 9         \\
+		{0x00000030}         &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x00000032-} & CTRL\_IT\_ADDR\_10     & RW            & 0x0000         & Adresses de branchement ch 10        \\
+		\rhline
+		\texttt{0x00000034-} & CTRL\_IT\_ADDR\_11     & RW            & 0x0000         & Adresses de branchement ch 11        \\
+		{0x00000036}         &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x00000038-} & CTRL\_IT\_ADDR\_12     & RW            & 0x0000         & Adresses de branchement ch 12        \\
+		{0x0000003A}         &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x0000003C-} & CTRL\_IT\_ADDR\_13     & RW            & 0x0000         & Adresses de branchement ch 13        \\
+		{0x0000003E}         &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x00000040-} & CTRL\_IT\_ADDR\_14     & RW            & 0x0000         & Adresses de branchement ch 14        \\
+		{0x00000042}         &                        &               &                &                                      \\
+		\rhline
+		\texttt{0x00000044}  & CTRL\_IT\_PRIO\_0\_1   & RW            & 0x0000         & Registre des priorités               \\
+		\rhline
+		\texttt{0x00000046}  & CTRL\_IT\_PRIO\_2\_3   & RW            & 0x0000         & Registre des priorités               \\
+		\rhline
+		\texttt{0x00000048}  & CTRL\_IT\_PRIO\_4\_5   & RW            & 0x0000         & Registre des priorités               \\
+		\rhline
+		\texttt{0x0000004A}  & CTRL\_IT\_PRIO\_6\_7   & RW            & 0x0000         & Registre des priorités               \\
+		\rhline
+		\texttt{0x0000004C}  & CTRL\_IT\_PRIO\_8\_9   & RW            & 0x0000         & Registre des priorités               \\
+		\rhline
+		\texttt{0x0000004E}  & CTRL\_IT\_PRIO\_10\_11 & RW            & 0x0000         & Registre des priorités               \\
+		\rhline
+		\texttt{0x00000050}  & CTRL\_IT\_PRIO\_12\_13 & RW            & 0x0000         & Registre des priorités               \\
+		\rhline
+		\texttt{0x00000052}  & CTRL\_IT\_PRIO\_14     & RW            & 0x0000         & Registre des priorités               \\
+		\hline
+	\end{tabular}
+	\caption{Organisation des registres du contrôleur d'interruption (vue globale)}
+	\label{tab:reg_map}
+\end{table}
 
-\begin{figure}[H]
+\begin{table}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{figure/plan_branchement.png}
-	\caption{Organisation du registre de branchement}
-	\label{fig:plan_branchement}
-\end{figure} 
+	\begin{tabular}{lll}
+		\toprule
+		\textbf{Bit} & \textbf{Nom} & \textbf{Fonction}                                 \\ \midrule
+		$[0]$        & Enable       & Active ou lit l'état d'activation du périphérique \\
+		             &              &
+		\noindent \begin{tabular}{lll}
+			\midrule
+			\textbf{Lecture}  & 0 & Le périphérique est désactivé \\
+			                  & 1 & Le périphérique est activé    \\
+			\textbf{Écriture} & 0 & Désactivation du périphérique \\
+			                  & 1 & Activation du périphérique    \\
+			\midrule
+		\end{tabular}                                            \\
+		$[15:1]$     & -            & Réservés                                          \\
+		\bottomrule
+	\end{tabular}
+	\caption{Détails du registre CTRL\_IT\_EN}
+	\label{tab:reg_EN}
+\end{table}
 
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lll}
+		\toprule
+		\textbf{Bit} & \textbf{Nom} & \textbf{Fonction}                               \\ \midrule
+		$[14:0]$     & Pending      & Lit l'état de suspension (pending) de la source \\
+		             &              &
+		\noindent \begin{tabular}{lll}
+			\midrule
+			\textbf{Lecture}  & 0 & La source est désactivé \\
+			                  & 1 & La source est activé    \\
+			\textbf{Écriture} & 0 & No effect               \\
+			                  & 1 & No effect               \\
+			\midrule
+		\end{tabular}                                          \\
+		$[15]$       & -            & Réservé                                         \\
+		\bottomrule
+	\end{tabular}
+	\caption{Détails du registre CTRL\_IT\_PEND}
+	\label{tab:reg_PEND}
+\end{table}
+
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lll}
+		\toprule
+		\textbf{Bit} & \textbf{Nom} & \textbf{Fonction}                 \\ \midrule
+		$[15:0]$     & BRA\_LSB     & Lit 16 LSB adresse de branchement \\
+		$[7:0]$      & BRA\_MSB     & Lit 8 MSB adresse de branchement  \\
+		$[15:8]$     & -            & Réservés                          \\
+		\bottomrule
+	\end{tabular}
+	\caption{Détails du registre CTRL\_IT\_BRA}
+	\label{tab:reg_BRA}
+\end{table}
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lll}
+		\toprule
+		\textbf{Bit} & \textbf{Nom} & \textbf{Fonction}                          \\ \midrule
+		$[15:0]$     & ADDR\_LSB    & Lit et écrit 16 LSB adresse de branchement \\
+		$[7:0]$      & ADDR\_MSB    & Lit et écrit 8 MSB adresse de branchement  \\
+		$[15:8]$     & -            & Réservés                                   \\
+		\bottomrule
+	\end{tabular}
+	\caption{Détails du registre CTRL\_IT\_ADDR\_N}
+	\label{tab:reg_ADDR}
+\end{table}
+
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{lll}
+		\toprule
+		\textbf{Bit} & \textbf{Nom} & \textbf{Fonction}                         \\ \midrule
+		$[2:0]$      & PRIO\_N      & Lit et écrit le niveau de priorité de N   \\
+		$[7:3]$      & -            & Réservés                                  \\
+		$[10:8]$     & PRIO\_N+1    & Lit et écrit le niveau de priorité de N+1 \\
+		$[15:11]$    & -            & Réservés                                  \\
+		\bottomrule
+	\end{tabular}
+	\caption{Détails du registre CTRL\_IT\_PRIO\_N\_N+1}
+	\label{tab:reg_PRIO}
+\end{table}
+Il est choisi de placer les priorités sur les 3 premiers bits de chaque octet.
+Cela permet une manipulation aisée en C et optimal pour un processeur possédant des instructions de manipulation d'octets.
+Elle n'est cependant pas optimale pour l'occupation mémoire qui passe au second plan.
+
+
+
+\newpage
 \subsection{Écriture des procédures de base pour l'emploi du circuit}
 
-(Du C à écrire (faire une lib low-level) je te laisse le plaisir de le faire)\\
+\begin{lstlisting}[style=CStyle]
+	#include <stdint.h>
+	#define CTRL_IT_BASE_ADDR 0xF0F0F0
+	
+	typedef enum {
+		nIT_ext0 = 0, nIT_ext1, nIT_ext2, nIT_ext3, nIT_RTC, nIT_TC_PWM,
+		nIT_pos_vit, nIT_FFTA, nIT_NNA,	nIT_SPI, nIT_PCI, nIT_UART,
+		nIT_I2C, nIT_CAN, nIT_DMA, NB_IT
+	}ID_IT_t;
+	
+	#pragma pack(push, 4)
+	typedef struct {
+		uint8_t ch : 3;
+		uint8_t RESERVED : 5;
+	}CTRL_IT_PRIO_t;
+	#pragma pack(pop)
+
+	#pragma pack(push, 43)
+	typedef struct {
+		uint16_t CTRL_IT_EN;	/* size : 2 */
+		uint16_t CTRL_IT_MSK;	/* size : 2 */
+		uint16_t CTRL_IT_PEND;	/* size : 2 */
+		void (*handler)(void);  /* size : 2 */
+		/* array of function pointer */
+		void (*CTRL_IT_ADDR[NB_IT])(void); /* size : 2x15=30 */
+		CTRL_IT_PRIO_t prio[NB_IT];	/* size : 1x15 */
+	}CTRL_IT_t;
+	#pragma pack(pop)
+	
+	CTRL_IT_t * CTRL_IT = (CTRL_IT_t * ) CTRL_IT_BASE_ADDR;
+\end{lstlisting}
+Le code ci-dessus défini la structure du contrôleur IT en langage C. Le résultat est le type \texttt{CTRL\_IT\_t}. Une instance globale est créée et initialisée avec l'adresse de base du périphérique.
+
+\begin{lstlisting}[style=CStyle]
+void UART_Handler(void)
+{
+    /* Do somethink */
+    /* clear UART IT flag */
+}
+
+void CTRL_IT_init_UART(void)
+{
+    /* Disable CTRL IT */
+    CTRL_IT->CTRL_IT_EN = 0x0000;
+    /* Mask the IC channel */
+    CTRL_IT->CTRL_IT_MSK = 1UL << nIT_UART;
+    /* Set handler addr */
+    CTRL_IT->CTRL_IT_ADDR[nIT_UART] = &UART_Handler;
+    /* Enable CTRL IT */
+    CTRL_IT->CTRL_IT_EN = 0x0001;
+}
+\end{lstlisting}
+Les deux procédures ci-dessus présentent un exemple d'initialisation du périphérique pour le channal UART.
 
 \subsection{Spécifications opératoires}
 \subsection{Spécifications technologiques}

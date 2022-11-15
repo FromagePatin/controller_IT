@@ -1,6 +1,6 @@
 #include <stdint.h>
 
-#define CTRL_IT_BASE_ADDR 0x000000;
+#define CTRL_IT_BASE_ADDR 0xF0F0F0
 
 typedef enum 
 {
@@ -41,6 +41,6 @@ typedef struct
     CTRL_IT_PRIO_t prio[NB_IT];
 }CTRL_IT_t;
 
-CTRL_IT_t * CTRL_IT = CTRL_IT_BASE_ADDR;
+CTRL_IT_t * CTRL_IT = (CTRL_IT_t * ) CTRL_IT_BASE_ADDR;
 
 void nIT_CPU_Handler (void);
