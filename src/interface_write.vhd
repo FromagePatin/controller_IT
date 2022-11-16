@@ -10,11 +10,11 @@ entity interface_write is
     nRST    : in    Def_bit;
     addr    : in    Def_addr;
     d_bus   : in    Def_data;
-    nCS_IT,nAS,RnW,EN  : in    Def_bit;
+    nCS_IT,nAS,RnW  : in    Def_bit;
     vect_priorite : out  Def_ConfigWr.vect_priorite;
     vect_handler : out  Def_ConfigWr.vect_handler;
     masque : out Def_ConfigWr.masque;
-    EN : out Def_ConfigWr.EN
+    EN : inout Def_ConfigWr.EN
   );
 end entity interface_write;
 
