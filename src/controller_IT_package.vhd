@@ -25,14 +25,14 @@ PACKAGE controller_IT_package IS
 
     type Def_ConfigWr is record
         vect_handler : Def_vect_handler;
-        priorite : Def_vect_priorite;
+        vect_priorite : Def_vect_priorite;
         masque : Def_masque;
     end record;
 
-    type Def_ConfigRr is record
+    type Def_ConfigRd is record
         vect_handler : Def_vect_handler;
         blx : Def_addr;
-        priorite : Def_vect_priorite;
+        vect_priorite : Def_vect_priorite;
         masque : Def_masque;
         pending : Def_pending;
     end record;    
