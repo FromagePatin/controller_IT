@@ -18,6 +18,7 @@ PACKAGE controller_IT_package IS
     subtype Def_bit is std_logic;
     subtype Def_masque is Def_bit;
     subtype Def_pending is Def_bit;
+    subtype Def_EN is Def_bit;
     
     type Def_Branch is record
         blx : Def_addr;
@@ -27,6 +28,7 @@ PACKAGE controller_IT_package IS
         vect_handler : Def_vect_handler;
         vect_priorite : Def_vect_priorite;
         masque : Def_masque;
+        EN : Def_EN;
     end record;
 
     type Def_ConfigRd is record
@@ -35,10 +37,12 @@ PACKAGE controller_IT_package IS
         vect_priorite : Def_vect_priorite;
         masque : Def_masque;
         pending : Def_pending;
+        EN : Def_EN;
     end record;    
   
     --Constants for the project
     constant TriState : Def_data := (others => 'Z');
+    constant addr_EN : Def_addr := X"0";
     constant addr_masque : Def_addr := X"2";
     constant addr_vect_handler : Def_addr := X"A"; 
     constant addr_vect_priorite : Def_addr := X"44";

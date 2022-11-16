@@ -13,7 +13,8 @@ entity interface_write is
     nCS_IT,nAS,RnW,EN  : in    Def_bit;
     vect_priorite : out  Def_ConfigWr.vect_priorite;
     vect_handler : out  Def_ConfigWr.vect_handler;
-    masque : out Def_ConfigWr.masque
+    masque : out Def_ConfigWr.masque;
+    EN : out Def_ConfigWr.EN
   );
 end entity interface_write;
 
@@ -35,6 +36,7 @@ Reinitialisation : process(RST)
         vect_priorite <= (others => '0');
         vect_handler <= (others => '0');
         masque <= (others => '0');
+        EN <= (others => '0');
     end if;
 end process Reinitialisation;
 
@@ -53,6 +55,8 @@ Write : process (clk)
             else
                 vect_handler <= (others => '0');
             end if;
+          when addr_EN =>
+            EN <= d_bus;
           when others =>
                 
         end case;

@@ -16,6 +16,7 @@ entity interface_read is
     masque : in Def_ConfigRd.masque;
     pending : in Def_ConfigRd.pending;
     blx : in Def_ConfigRd.blx;
+    EN : in Def_ConfigRd.EN
   );
 end entity interface_read;
 
@@ -39,6 +40,7 @@ Reinitialisation : process(RST)
         masque <= (others => '0');
         pending <= (others => '0');
         blx <= (others => '0');
+        EN <= (others => '0');
     end if;
 end process Reinitialisation;
 
@@ -57,6 +59,8 @@ Read : process (RnW,CS,addr,vect_priorite,vect_handler,masque,pending,blx)
             d_bus <= pending;
           when addr_blx =>
             d_bus <= blx;
+          when addr_EN =>
+            d_bus <= EN;
           when others =>
                 
         end case;
