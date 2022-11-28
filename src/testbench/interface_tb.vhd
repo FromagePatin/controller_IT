@@ -16,13 +16,13 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.Numeric_Std.all;
-use std.textio.all;
-use std.env.finish;
+--use std.textio.all;
+--use std.env.finish;
 
 --user include
 library work;
 use work.controller_IT_package.all;
-use work.interface_read.all;
+--use work.interface_read.all;
 
 entity interface_tb is
 end entity interface_tb;
@@ -36,27 +36,45 @@ architecture arch of interface_tb is
   signal addr : Def_addr;
   signal d_bus : Def_data;
   signal RnW : std_logic;
+  signal EN : Def_EN;
+  signal vect_priorite : Def_vect_priorite;
+  signal vect_handler : Def_vect_handler;
+  signal masque : Def_masque;
+  signal pending : Def_pending;
+  signal blx : Def_addr;
+  signal StopClock : boolean := FALSE;
 
 begin
-  UUT : entity work.interface_read (interface_read)
+  UUT : entity work.interface_read (RTL)
     port map(
-      clk : clk;
-      nRST : nRST;
-      addr : addr;
-      d_bus : d_bus;
-      RnW : RnW;
-      nAS : nAS;
-      nCS : nCS;
-      EN : EN
+      clk => clk,
+      nRST => nRST,
+      addr => addr,
+      d_bus => d_bus,
+      nCS_IT => nCS,
+      nAS => nAS,
+      RnW => RnW,
+      vect_priorite => vect_priorite,
+      vect_handler => vect_handler,
+      masque => masque,
+      pending => pending,
+      blx => blx,
+      EN => EN
     );
 
 -- clock generation
 ClockGen : process is
 begin
+  --si on veut arrêter ce process (sinon la simu tourne en boucle)
+  --il faut utiliser le signal StopClock qu'on viendra changer dans
+  --le process proc_test_EN
+  while not StopClock loop
   clk <= '0';
   wait for 5 ns;
   clk <= '1';
   wait for 5 ns;
+  end loop;
+  wait;
 end process ClockGen;
 
 proc_test_EN : process is
@@ -83,10 +101,16 @@ begin
 
   RnW <= '1'; -- Read
   addr <= (others => '0');
-  assert d_bus = to_unsigned(1, data_bus_size)
-  report "Peripheral disable";
+  
+  --assert d_bus = to_unsigned(1, data_bus_size)
+  --report "Peripheral disable";
 
-  finish;
+  --finish;
+
+  --on stop le process ClockGen
+  StopClock <= true;
+  -- pour finir un testbench un simple wait suffit
+  wait;
 
 end process proc_test_EN;
 

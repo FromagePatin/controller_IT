@@ -1,6 +1,7 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.Numeric_Std.all;
+
 library work;
 use work.controller_IT_package.all;
 
@@ -10,7 +11,9 @@ entity interface_read is
     nRST : in Def_bit;
     addr : in Def_addr;
     d_bus : out unsigned(data_bus_size - 1 downto 0);
-    nCS_IT, nAS, RnW : in Def_bit;
+    nCS_IT : in Def_bit;
+    nAS : in Def_bit;
+    RnW : in Def_bit;
     vect_priorite : in Def_vect_priorite;
     vect_handler : in Def_vect_handler;
     masque : in Def_masque;
@@ -28,6 +31,7 @@ architecture RTL of interface_read is
 
 begin
 
+  --Inserting NOT gates to make signals active low
   RST <= not nRST;
   CS <= not nCS_IT;
   AS <= not nAS;
@@ -46,14 +50,14 @@ begin
     if rising_edge(clk) and CS = '1' and RnW = '1' and AS = '1' then
       d_bus <= (others => '0'); 
       case addr is
-        when addr_EN => d_bus <= (0=>EN, others => '0');
-        when addr_masque => d_bus <= (masque, others => '0');
-        when addr_pending => d_bus <= (pending, others => '0');
-        when addr_blx => d_bus <= blx(data_bus_size - 1 downto 0); -- LSB
-        when addr_blx + 2 => d_bus <= (blx(addr_bus_size - 1 downto data_bus_size), others => '0'); -- MSB
-        --when addr_vect_handler => d_bus <= vect_handler;
+        when addr_EN => d_bus <= (0 => EN, others => '0');
+        when addr_masque => d_bus <= to_unsigned(to_integer(masque),addr_bus_size);
+        when addr_pending => d_bus <= to_unsigned(to_integer(pending),addr_bus_size);
+        when addr_blx => d_bus <= to_unsigned(to_integer(blx(data_bus_size-1 downto 0)),addr_bus_size); -- LSB
+        when addr_blx_2 => d_bus <= to_unsigned(to_integer(blx(addr_bus_size-1 downto data_bus_size)),addr_bus_size); -- MSB
+        --when addr_vect_handler => d_bus <= ve(std_logic_vector(blx(addr_bus_size - 1 downto data_bus_size)), others => '0')ct_handler;
         --when addr_vect_priorite => d_bus <= vect_priorite;
-       when others => 
+       when others => d_bus <= (others => '0');
       end case;
 
       HANDLER_MAPPING :
@@ -62,7 +66,7 @@ begin
         if (addr = addr_vect_handler + 4 * i) then -- LSB
           d_bus <= vect_handler(i)(data_bus_size - 1 downto 0);
         elsif (addr = addr_vect_handler + 4 * i + 2) then --MSB
-          d_bus <= (vect_handler(i)(addr_bus_size - 1 downto data_bus_size), others => '0');
+          d_bus <= to_unsigned(to_integer(vect_handler(i)(addr_bus_size - 1 downto data_bus_size)), addr_bus_size);
         end if;
       end loop;
 

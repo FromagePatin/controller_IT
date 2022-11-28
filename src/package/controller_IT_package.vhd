@@ -42,10 +42,11 @@ package controller_IT_package is
 
   --Constants for the project
   constant TriState : Def_data := (others => 'Z');
-  constant addr_EN : Def_addr := (others => '0');
-  constant addr_masque : Def_addr := (1 => '1', others => '0'); -- 0x2
-  constant addr_pending : Def_addr := (2 => '1', others => '0'); -- 0x4
-  constant addr_blx : Def_addr := (1 => '1', 2 => '1', others => '0'); --0x6
-  constant addr_vect_handler : Def_addr := (3 => '1', 1 => '1', others => '0'); --0xA
-  constant addr_vect_priorite : Def_addr := (6 => '1', 2 => '1', others => '0'); --0x44
+  constant addr_EN : Def_addr := "0000000000000000000000";
+  constant addr_masque : Def_addr := "0000000000000000000010"; -- 0x2
+  constant addr_pending : Def_addr := "0000000000000000000100"; -- 0x4
+  constant addr_blx : Def_addr := "0000000000000000000110"; --0x6
+  constant addr_blx_2 : Def_addr := "0000000000000000001000"; --0x8
+  constant addr_vect_handler : Def_addr := "0000000000000000001010"; --0xA
+  constant addr_vect_priorite : Def_addr := "0000000000000001000100"; --0x44
 end controller_IT_package;
