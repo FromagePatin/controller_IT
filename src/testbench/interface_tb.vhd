@@ -16,8 +16,8 @@
 library IEEE;
 use IEEE.STD_LOGIC_1164.all;
 use IEEE.Numeric_Std.all;
---use std.textio.all;
---use std.env.finish;
+use std.textio.all;
+use std.env.finish;
 
 --user include
 library work;
@@ -45,13 +45,13 @@ architecture arch of interface_tb is
   signal StopClock : boolean := FALSE;
 
 begin
-  UUT : entity work.interface_read (RTL)
+  UUT_read : entity work.interface_read (RTL)
     port map(
       clk => clk,
       nRST => nRST,
       addr => addr,
       d_bus => d_bus,
-      nCS_IT => nCS,
+      nCS => nCS,
       nAS => nAS,
       RnW => RnW,
       vect_priorite => vect_priorite,
@@ -62,57 +62,92 @@ begin
       EN => EN
     );
 
--- clock generation
-ClockGen : process is
-begin
-  --si on veut arrêter ce process (sinon la simu tourne en boucle)
-  --il faut utiliser le signal StopClock qu'on viendra changer dans
-  --le process proc_test_EN
-  while not StopClock loop
-  clk <= '0';
-  wait for 5 ns;
-  clk <= '1';
-  wait for 5 ns;
-  end loop;
-  wait;
-end process ClockGen;
+  UUT_write : entity work.interface_write (RTL)
+    port map(
+      clk => clk,
+      nRST => nRST,
+      addr => addr,
+      d_bus => d_bus,
+      nCS => nCS,
+      nAS => nAS,
+      RnW => RnW,
+      vect_priorite => vect_priorite,
+      vect_handler => vect_handler,
+      masque => masque,
+      EN => EN
+    );
+  -- clock generation
+  ClockGen : process is
+  begin
+    while not StopClock loop
+      clk <= '0';
+      wait for 5 ns;
+      clk <= '1';
+      wait for 5 ns;
+    end loop;
+    wait;
+  end process ClockGen;
 
-proc_test_EN : process is
-begin
-  -- init
-  nCS <= '0';
-  nAS <= '0';
-  RnW <= '0';
-  addr <= (others => '0');
-  d_bus <= (others => '0');
-  nRST <= '1';
+  proc_test_EN : process is
+  begin
+    -- init
+    nCS <= '1';
+    nAS <= '1';
+    RnW <= '0';
+    addr <= (others => '0');
+    d_bus <= (others => 'Z');
+    nRST <= '0';
 
-  -- falling edge
-  wait until falling_edge(clk);
+    wait until rising_edge(clk);
 
-  -- enable peripheral
+    nRST <= '1'; -- disable reset
 
-  RnW <= '1'; -- Write
-  addr <= (others => '0');
+    wait until falling_edge(clk);
 
-  d_bus <= to_unsigned(1, data_bus_size);
+    -- set value in register handler   
+    handler_address_tb :
+    for i in (IT_size - 1) downto 0 loop
+      -- i increment ID IT
+      vect_handler(i) <= to_unsigned(i, addr_bus_size);
+    end loop;
 
-  wait until falling_edge(clk);
+    wait until falling_edge(clk);
 
-  RnW <= '1'; -- Read
-  addr <= (others => '0');
-  
-  --assert d_bus = to_unsigned(1, data_bus_size)
-  --report "Peripheral disable";
+    d_bus <= TriState;
+    RnW <= '1'; -- Read
+    nCS <= '0';
+    nAS <= '0';
+    handler_address_view_tb :
+    for i in 0 to (IT_size - 1) loop
+      -- i increment ID IT
+      addr <= addr_vect_handler + i * 4;
+      wait until falling_edge(clk);
+      addr <= addr_vect_handler + i * 4 + 2;
+      wait until falling_edge(clk);
+    end loop;
 
-  --finish;
+    -- set value in register priority   
+    handler_priority_tb :
+    for i in (IT_size - 1) downto 0 loop
+      -- i increment ID IT
+      vect_priorite(i) <= to_unsigned(i, 3);
+    end loop;
 
-  --on stop le process ClockGen
-  StopClock <= true;
-  -- pour finir un testbench un simple wait suffit
-  wait;
+    wait until falling_edge(clk);
 
-end process proc_test_EN;
+    handler_priority_view_tb :
+    for i in 0 to ((IT_size/2) - 1) loop
+      -- i increment ID IT
+      addr <= addr_vect_priorite + i * 2;
+      wait until falling_edge(clk);
+    end loop;
+
+    finish;
+
+    StopClock <= true;
+    wait;
+
+  end process proc_test_EN;
 
 end architecture arch;
 -- library IEEE;

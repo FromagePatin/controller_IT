@@ -13,7 +13,7 @@ package controller_IT_package is
   --Data type for the project
   subtype Def_addr is unsigned(addr_bus_size - 1 downto 0);
   subtype Def_data is unsigned(data_bus_size - 1 downto 0);
-  type Def_vect_priorite is array (0 to IT_size - 1) of unsigned(byte_size - 1 downto 0);
+  type Def_vect_priorite is array (0 to IT_size - 1) of unsigned(2 downto 0);
   type Def_vect_handler is array (0 to IT_size - 1) of Def_addr;
   subtype Def_bit is std_logic;
   subtype Def_EN is Def_bit;

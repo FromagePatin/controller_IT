@@ -7,36 +7,33 @@
 FILES = source/*
 VHDLEX = .vhd
 
-# package
-PACKAGE = package/controller_IT_package
-
 # testbench
 TB_FILE = interface_tb
 TB_PATH = testbench/${TB_FILE}$(VHDLEX)
 
-
 #GHDL CONFIG
 GHDL_CMD = ghdl
-GHDL_FLAGS  = --std=08
 
 SIMDIR = simulation
-STOP_TIME = 50ns
+STOP_TIME = 10ns
 GHDL_SIM_OPT = --stop-time=$(STOP_TIME)
+
+#GHDL_FLAGS += $(GHDL_SIM_OPT)
+GHDL_FLAGS  += --std=08
 
 WAVEFORM_VIEWER = gtkwave
 
 .PHONY: clean
 
-all: clean make run view
+all: clean make run #view
 
 syntax:
 	$(GHDL_CMD) -s  $(GHDL_FLAGS) --workdir=simulation --work=work $(FILES)
 
 compile:
-	$(GHDL_CMD) -i --workdir=simulation $(PACKAGE)$(VHDLEX)
-	$(GHDL_CMD) -i --workdir=simulation $(TB_PATH) $(FILES)
+	$(GHDL_CMD) -i $(GHDL_FLAGS) --workdir=simulation --work=work $(TB_PATH) $(FILES)
 #	-i [OPTS] FILEs    Import units of FILEs
-	$(GHDL_CMD) -m  -g --workdir=simulation $(TB_FILE)
+	$(GHDL_CMD) -m  -g $(GHDL_FLAGS) --workdir=simulation --work=work $(TB_FILE)
 #	-m [OPTS] UNIT [ARCH]  Make UNIT
 #		 -g Generate debugging informations
 
@@ -45,7 +42,7 @@ make:
 	make compile
 
 run:
-	$(GHDL_CMD) -r  -g --workdir=simulation $(TB_FILE) --wave=./$(SIMDIR)/wave.ghw 
+	$(GHDL_CMD) -r  -g $(GHDL_FLAGS) --workdir=simulation $(TB_FILE) --wave=./$(SIMDIR)/wave.ghw 
 #	-r,--elab-run [OPTS] UNIT [ARCH] [RUNOPTS]  Run UNIT
 
 view:
@@ -55,7 +52,3 @@ clean:
 	@$(GHDL_CMD) --clean --workdir=simulation --work=work
 	@rm -rf $(SIMDIR)
 
-analyze:
-	$(GHDL_CMD) -a --workdir=simulation $(PACKAGE)$(VHDLEX)
-	$(GHDL_CMD) -a --workdir=simulation source/interface_read.vhd
-	$(GHDL_CMD) -a --workdir=simulation $(TB_PATH)
