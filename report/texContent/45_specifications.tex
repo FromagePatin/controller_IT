@@ -85,15 +85,15 @@ Chaque autre relation est une composition de sous-relations comme définie ci-ap
 \end{equation*}
 
 \begin{equation*}
-\mbox{ConfigWr} = \mbox{ @blx } + \mbox{ priorité } + \mbox{ masque }
+\mbox{ConfigWr} = \mbox{ @handler } + \mbox{ priorité } + \mbox{ masque }
 \end{equation*}
 
 \begin{equation*}
-\mbox{ConfigRd} = \mbox{ ID } + \mbox{ @blx } + \mbox{ priorité } + \mbox{ masque } + \mbox{ pending } + \mbox{ traitement }
+\mbox{ConfigRd} = \mbox{ ID } + \mbox{ @handler } + \mbox{ @blx } + \mbox{ priorité } + \mbox{ masque } + \mbox{ pending } + \mbox{ traitement }
 \end{equation*}
 
 ID représente l'identifiant de l'interruption.
-@blx est la sous-relation qui précise l'adresse de branchement de la sous-routine de l'interruption à traiter.
+@blx est la sous-relation qui précise l'adresse de branchement de la sous-routine de l'interruption à traiter. @handler est un tableau comportant les adresses des sous-routines d'interruptions.
 La relation priorité indique la priorité attribuée pour une interruption, masque précise si l'interruption est masquée ou non.
 En ce qui concerne pending, il s'agit d'une sous-relation qui informe si une interruption est mise en attente pour être traitée ultérieurement.
 Enfin, traitement prends en compte si une interruption a déjà été traitée ou non avant que celle-ci soit clear par l'IP concernée.
@@ -111,6 +111,10 @@ Enfin, traitement prends en compte si une interruption a déjà été traitée o
 		& & \\
 		@blx & Def\_@blx & Entier de 0 à $2^{22}-1$\\
 		& & \\
+		\hline
+		& & Tableau de 30 éléments de taille\\
+		@handler & Def\_@handler & Def\_Data valant 16$\times$Def\_Bit\\
+		& & avec Def\_Bit 0 ou 1\\
 		\hline
 		& & Entier de 0 à 7\\
 		priorité & Def\_priorité & 0 : le plus prioritaire\\
@@ -478,4 +482,38 @@ void CTRL_IT_init_UART(void)
 Les deux procédures ci-dessus présentent un exemple d'initialisation du périphérique pour le canal UART.
 
 \subsection{Spécifications opératoires}
+
+Les spécifications opératoires concernent les définitions des principales opérations du contrôleur d'interruptions et de leur vérification.
+Il s'agira de définir les modalités de vérification du circuit pour diverses opérations.
+
+\subsubsection{Modalités de vérification du circuit}
+
+\subsubsection*{Opération d'écriture dans un registre}
+
+vérif à définir
+
+\subsubsection*{Opération de lecture dans un registre}
+
+vérif à définir
+
+\subsubsection*{Opération de réinitialisation de l'IP}
+
+vérif à définir
+
+\subsubsection*{Traitement d'une seule interruption}
+
+vérif à définir
+
+\subsubsection*{Traitement de deux interruptions de priorité différente}
+
+vérif à définir
+
 \subsection{Spécifications technologiques}
+
+\subsubsection{Contraintes de répartition}
+
+aucune contrainte de répartition géographique : IP dans la même chip et seulement 1 CPU dans le SoC
+
+\subsubsection{Contraintes technologiques}
+
+rappel du FPGA utilisé, des ressources présentes (des LUT de combien ?)
