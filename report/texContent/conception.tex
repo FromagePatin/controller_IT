@@ -49,4 +49,108 @@ Cette décomposition en bloc hiérarchique permet de mettre en lumière deux fon
 
 \subsubsection{Algorithme \texttt{Interface\_Write}}
 
+\begin{lstlisting}[style=pascalstyle]
+action Interface_Write sur clk avec
+(
+entree var d_bus 		: Def_data;
+entree var addr 		: Def_addr;
+entree var nRST 		: Def_Bit
+entree var nCS_IT 		: Def_Bit;
+entree var nAS 			: Def_Bit;
+entree var RnW 			: Def_Bit;
+sortie var EN 			: Def_Bit;
+sortie var vect_priorite 	: Def_vect_priorite;
+sortie var vect_handler 	: Def_vect_handler;
+sortie var masque 		: Def_masque
+);
+
+const addr_EN 			: Def_addr = 0x000000;
+const addr_masque 		: Def_addr = 0x000002;
+const addr_vect_handler 	: Def_addr = 0x00000A;
+const addr_vect_priorite 	: Def_addr = 0x000044;
+
+begin
+
+cycle:
+begin
+	cycle H:
+	begin
+	if (nRST=0) then
+		EN := 0;
+		priorite := 0;
+		vect_handler := 0;
+		masque := 0;
+	end if;
+	if (nCS_IT=0) et (RnW=0) et (nAS=0) then
+	case addr of
+	addr_EN:
+		EN := d_bus;
+	addr_masque:
+		masque := d_bus;
+	addr_vect_handler:
+		vect_handler := d_bus;
+	addr_vect_priorite:
+		vect_priorite := d_bus;
+	end if;
+	end cycle H;
+end cycle;
+end Interface_Write;
+\end{lstlisting}
+
+\newpage
 \subsubsection{Algorithme \texttt{Interface\_Read}}
+
+\begin{lstlisting}[style=pascalstyle]
+action Interface_Read sur clk avec
+(
+entree var addr 		: Def_addr;
+entree var nCS_IT 		: Def_Bit;
+entree var nAS 			: Def_Bit;
+entree var RnW 			: Def_Bit;
+entree var nRST 		: Def_Bit;
+entree var EN 			: Def_Bit;
+entree var vect_priorite 	: Def_vect_priorite;
+entree var vect_handler 	: Def_vect_handler;
+entree var masque 		: Def_masque;
+entree var pending 		: Def_pending
+entree var blx 			: Def_blx;
+sortie var d_bus 		: Def_data
+);
+
+var TriState : HauteImpedance;
+const addr_EN	     : Def_addr = 0x000000;
+const addr_masque   : Def_addr = 0x000002;
+const addr_pending : Def_addr = 0x000004;
+const addr_blx : Def_addr = 0x000006;
+const addr_vect_handler : Def_addr = 0x00000A;
+const addr_vect_priorite : Def_addr = 0x000044;
+
+begin
+
+cycle:
+begin
+	cycle H:
+	begin
+	if (nRST=0) then
+		//ne rien faire
+	end if;
+	d_bus := TriState;
+	if (nCS_IT=0) et (RnW=1) et (nAS=0) then
+		case addr of
+		addr_EN:
+			d_bus := EN;
+		addr_masque:
+			d_bus := masque;
+		addr_vect_handler:
+			d_bus := vect_handler;
+		addr_vect_priorite:
+			d_bus := vect_priorite;
+		addr_pending:
+			d_bus := pending;
+		addr_blx:
+			d_bus := blx;
+	end if;
+	end cycle H;
+end cycle;
+end Interface_Read;
+\end{lstlisting}
