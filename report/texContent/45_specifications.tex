@@ -497,6 +497,8 @@ L'adresse de la fonction \texttt{UART\_Handler} est affectuée dans le regsitre 
 Le périphérique est activé à nouveau à la fin de la configuration.
 Dans cet exemple, la fonction à appeler est créée, il revient à l'utilisateur de la compléter en prenant soit de la finir par acquitter sur le périphérique en question (clear flag).
 
+\newpage
+
 \subsection{Spécifications opératoires}
 
 Les spécifications opératoires concernent les définitions des principales opérations du contrôleur d'interruptions et de leur vérification.
@@ -504,32 +506,53 @@ Il s'agira de définir les modalités de vérification du circuit pour diverses 
 
 \subsubsection{Modalités de vérification du circuit}
 
-\subsubsection*{Opération d'écriture dans un registre}
+\subsubsection*{Opération d'écriture et lecture dans un registre}
 
-vérif à définir
-
-\subsubsection*{Opération de lecture dans un registre}
-
-vérif à définir
+Un banc de test sera mis en place afin d'écrire puis lire dans l'ensemble des registres de l'IP.
+Les phases d'écriture et lecture seront réalisées par affectation des signaux d'interfaçage entre le contrôleur d'interruptions et le système à microprocesseur (bus de données, bus d'adresses, signaux de contrôle).
 
 \subsubsection*{Opération de réinitialisation de l'IP}
 
-vérif à définir
+Un banc de test sera mis en place afin de réinitialiser l'entièreté du contrôleur d'interruptions.
+Une telle réinitialisation sera faite par le biais du signal de contrôle nRST synchrone à l'horloge.
 
 \subsubsection*{Traitement d'une seule interruption}
 
-vérif à définir
+Un banc de test sera mis en place afin de traiter une interruption.
+Il s'agira de traiter l'interruption comme l'indique la figure (\ref{fig:spe_IT}).
 
 \subsubsection*{Traitement de deux interruptions de priorité différente}
 
-vérif à définir
+Un banc de test sera mis en place afin de traiter deux interruptions de priorité différente.
+Il s'agira de traiter l'interruption comme l'indique la figure (\ref{fig:spe_2IT}).
 
 \subsection{Spécifications technologiques}
 
 \subsubsection{Contraintes de répartition}
 
-aucune contrainte de répartition géographique : IP dans la même chip et seulement 1 CPU dans le SoC
+La contrainte de répartition est utile lorsque la présence des calculateurs (des processeurs) sont géographiquement répartis.
+Dans le cadre de la conception du contrôleur d'interruptions, il n'y a aucune contrainte de répartition.
+En effet, l'IP se trouve dans la même puce que le processeur.
 
 \subsubsection{Contraintes technologiques}
 
-rappel du FPGA utilisé, des ressources présentes (des LUT de combien ?)
+L'IP à concevoir se situe dans le flow de conception FPGA et non ASIC.
+Le contrôleur d'interruptions sera donc implémenté sur un FPGA.
+La carte d'évaluation utilisée sera la Zedboard basée sur un FPGA Zynq-7000. La table ci-dessous présente quelques caractéristiques du Zynq-7000.
+
+\begin{figure}[H]
+	\centering
+	\begin{tabular}{|c|c|}
+		\hline
+		Système à microprocesseur & Dual-core ARM Cortex-A9 d'architecture ARMv7-A\\
+		& avec une fréquence max de 766 MHz\\
+		\hline
+		Mémoires & 32 kB de cache de niveau 1 par processeur\\
+		& 512 kB de cache de niveau 2, 256 kB de RAM\\
+		\hline
+		FPGA Artix-7 & 53 200 LUTs et 106 400 bascules\\
+		\hline
+	\end{tabular}
+	\caption{Caractéristiques du FPGA Zynq 7000}
+	\label{tab:zynq_7000}
+\end{figure}
