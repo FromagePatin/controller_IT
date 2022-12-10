@@ -243,10 +243,10 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 %	\label{fig:spec_func_2}
 %\end{figure} 
 
-
 \subsection{Spécification des registres}
+Le tableau \ref{tab:reg_map} ci-dessous donne l'organisation des registres dans le contrôleur.
+Une vue détaillée par chacun d'eux est présentée ensuite.
 \newpage
-
 \begin{table}[H]
 	\centering
 	\begin{tabular}{llllll}
@@ -328,6 +328,8 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 	\label{tab:reg_map}
 \end{table}
 
+Le regitre CTRL\_IT\_EN contrôle l'activation de la partie opérative du composant. Lorsque le bit \texttt{Enable} vaut zero, les interruptions ne sont plus prises en compte, il est toujours possible d'écrire et lire l'état des registres.
+
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lll}
@@ -350,6 +352,7 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 	\label{tab:reg_EN}
 \end{table}
 
+Le registre \texttt{CTRL\_IT\_PEND} contient les sources d'interruptions actives, celles qui ne sont pas masquées.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lll}
@@ -373,7 +376,8 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 \end{table}
 
 
-
+Le registre \texttt{CTRL\_IT\_BRA} indique l'addresse de branchement de l'interruption en cours.
+Son contenu n'est valide que lorsque le processeur a été notifié pas le signal nIT\_CPU.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lll}
@@ -388,8 +392,10 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 	\label{tab:reg_BRA}
 \end{table}
 
-
-
+Le tableau \ref{tab:reg_ADDR} décrit l'organisation des registres permettant la configuration de l'adresse de branchement en fonction du numéro d'interruption. 
+Une lecture peut être faite à tout instant. 
+Une écriture doit être faite lorsque le périphérique est désactivé (\texttt{CTRL\_IT\_EN} = $0x0000$).
+Cette règle est fixée afin d'éviter l'occurrence d'une interruption entre les deux cycles d'écritures nécessaires au chargement d'une adresse.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lll}
@@ -404,7 +410,10 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 	\label{tab:reg_ADDR}
 \end{table}
 
-
+Le tableau \ref{tab:reg_PRIO} décri l'organisation des registres permettant la configuration du niveau de priorité.
+Pour simplifier le programme C, les données sont alignées sur un octet.
+Si le nombre de sources d'interruption est impaire, le dernier registre ne contiendra qu'une seule valeur.
+Dans notre cas, nous avons 15 sources, \texttt{CTRL\_IT\_PRIO\_N\_14} ne contient que la priorité 14 sur les bits de 0 à 2.
 \begin{table}[H]
 	\centering
 	\begin{tabular}{lll}
@@ -419,14 +428,10 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 	\caption{Détails du registre CTRL\_IT\_PRIO\_N\_N+1}
 	\label{tab:reg_PRIO}
 \end{table}
-Il est choisi de placer les priorités sur les 3 premiers bits de chaque octet.
-Cela permet une manipulation aisée en C et optimal pour un processeur possédant des instructions de manipulation d'octets.
-Elle n'est cependant pas optimale pour l'occupation mémoire qui passe au second plan.
 
 
-
-\subsection{Écriture des procédures de base pour l'emploi du circuit}
-
+\subsection{Écriture des procédures de base}
+Dans cette partie, des codes C sont donnés en exemple pour illustrer l'utilisation du périphérique.
 \begin{lstlisting}[style=CStyle]
 	#include <stdint.h>
 	#define CTRL_IT_BASE_ADDR 0xF0F0F0
@@ -437,28 +442,33 @@ Elle n'est cependant pas optimale pour l'occupation mémoire qui passe au second
 		nIT_I2C, nIT_CAN, nIT_DMA, NB_IT
 	}ID_IT_t;
 	
-	#pragma pack(push, 4)
 	typedef struct {
 		uint8_t ch : 3;
 		uint8_t RESERVED : 5;
 	}CTRL_IT_PRIO_t;
-	#pragma pack(pop)
 
-	#pragma pack(push, 53)
 	typedef struct {
-		uint16_t CTRL_IT_EN;	/* size : 2 */
-		uint16_t CTRL_IT_MSK;	/* size : 2 */
-		uint16_t CTRL_IT_PEND;	/* size : 2 */
-		void (*handler)(void);  /* size : 2 */
+		uint16_t CTRL_IT_EN;	
+		uint16_t CTRL_IT_MSK;	
+		uint16_t CTRL_IT_PEND;	
+		void (*handler)(void);  
 		/* array of function pointer */
-		void (*CTRL_IT_ADDR[NB_IT])(void); /* size : 2x15=30 */
-		CTRL_IT_PRIO_t prio[NB_IT];	/* size : 1x15 */
+		void (*CTRL_IT_ADDR[NB_IT])(void);
+		CTRL_IT_PRIO_t prio[NB_IT];
 	}CTRL_IT_t;
-	#pragma pack(pop)
 	
 	CTRL_IT_t * CTRL_IT = (CTRL_IT_t * ) CTRL_IT_BASE_ADDR;
 \end{lstlisting}
-Le code ci-dessus défini la structure du contrôleur IT en langage C. Le résultat est le type \texttt{CTRL\_IT\_t}. Une instance globale est créée et initialisée avec l'adresse de base du périphérique.
+Le code ci-dessus défini la structure du contrôleur IT en langage C. 
+Le résultat est le type \texttt{CTRL\_IT\_t}. 
+Une instance globale est créée et initialisée avec l'adresse de base du périphérique.
+Sa valeur est choisie arbitrairement dans cet exemple.
+Les trois premiers éléments de la structure sont déclarés sur 16 bits bien que certains champs soient réservé.
+Il revient au développeur d'appliquer un masque cohérent en se basant sur le détail des registres page précédente.
+Les éléments \texttt{handler} et \texttt{CTRL\_IT\_ADDR} sont définis comme des pointeurs de fonction, car les données contenues sont des adresses de fonction.
+Concevoir conjointement l'organisation des registres et le programme C permet d'aboutir à un compromis entre complexité matérielle et logicielle.
+Par exemple, nous avons cherché à représenter la priorité sous forme d'un tableau d'octet.
+La complexité du \textit{VHDL} est acceptable et le développeur peut accéder à la priorité avec un tableau où l'indice est le numéro d'interruption.
 
 \begin{lstlisting}[style=CStyle]
 void UART_Handler(void)
@@ -479,7 +489,13 @@ void CTRL_IT_init_UART(void)
     CTRL_IT->CTRL_IT_EN = 0x0001;
 }
 \end{lstlisting}
-Les deux procédures ci-dessus présentent un exemple d'initialisation du périphérique pour le canal UART.
+Les deux procédures ci-dessus présentent un exemple d'initialisation du périphérique pour le canal \gls{UART}.
+Il est préférable d'effectuer la configuration lorsqu'il est désactivé.
+Pour rappel, l'écriture dans le registre \texttt{CTRL\_IT\_ADDR} implique nécessairement sa désactivation.
+L'énumération du type \texttt{ID\_IT\_t} facilite l'écriture par l'usage de \texttt{nIT\_UART}.
+L'adresse de la fonction \texttt{UART\_Handler} est affectuée dans le regsitre de configuration des adresses de branchement.
+Le périphérique est activé à nouveau à la fin de la configuration.
+Dans cet exemple, la fonction à appeler est créée, il revient à l'utilisateur de la compléter en prenant soit de la finir par acquitter sur le périphérique en question (clear flag).
 
 \subsection{Spécifications opératoires}
 

@@ -8,7 +8,7 @@ FILES = source/*
 VHDLEX = .vhd
 
 # testbench
-TB_FILE = interface_tb
+TB_FILE = priority_solver_tb
 TB_PATH = testbench/${TB_FILE}$(VHDLEX)
 
 #GHDL CONFIG
@@ -20,6 +20,7 @@ GHDL_SIM_OPT = --stop-time=$(STOP_TIME)
 
 #GHDL_FLAGS += $(GHDL_SIM_OPT)
 GHDL_FLAGS  += --std=08
+GHDL_FLAGS  += -fsynopsys
 
 WAVEFORM_VIEWER = gtkwave
 
