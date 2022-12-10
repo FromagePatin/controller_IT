@@ -30,7 +30,7 @@ architecture Bench of priority_solver_tb is
   signal id_it : unsigned(NB_BIT_IT - 1 downto 0);
 
   signal priority_vector : t_array_prio(IT_size - 1 downto 0); -- := ("11", "01", "10", "00");
-  signal mask : Def_masque := to_unsigned(0,Def_masque'length);
+  signal mask : Def_masque := to_unsigned(6,Def_masque'length);
   signal nIT_xxx_masked : unsigned(IT_size - 1 downto 0);
 begin
 
@@ -53,13 +53,13 @@ begin
 
     -- Load priority register
     for i in 0 to IT_size - 1 loop
-      priority_vector(i) <= to_unsigned(0, NB_BIT_PRIO); --to_unsigned(IT_size - i, NB_BIT_PRIO);
+      priority_vector(i) <= to_unsigned(IT_size -1 - i, NB_BIT_PRIO);
     end loop;
     
 
-    priority_vector(1) <= to_unsigned(4, NB_BIT_PRIO);
-    priority_vector(2) <= to_unsigned(4, NB_BIT_PRIO);
-    priority_vector(4) <= to_unsigned(6, NB_BIT_PRIO);
+--    priority_vector(1) <= to_unsigned(4, NB_BIT_PRIO);
+--    priority_vector(2) <= to_unsigned(4, NB_BIT_PRIO);
+--    priority_vector(4) <= to_unsigned(6, NB_BIT_PRIO);
 
     nIT_xxx <= (4=>'1',2=>'1',1=>'1', others =>'0');
     wait for 5 ns;
@@ -67,8 +67,7 @@ begin
     wait for 5 ns;
     nIT_xxx <= (1=>'1',2=>'1', others =>'0');
     wait for 5 ns;
-    wait; -- obligation
-    
+
     
     for i in 0 to (2 ** IT_size) - 1 loop
       nIT_xxx <= to_unsigned(i, IT_size);
