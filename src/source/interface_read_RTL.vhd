@@ -3,8 +3,8 @@ use ieee.std_logic_1164.all;
 use ieee.std_logic_arith.all;
 use IEEE.Numeric_Std.all;
 
-library controller_IT_lib;
-use controller_IT_lib.controller_IT_package.all;
+
+use work.controller_IT_package.all;
 entity interface_read is
   port (
     d_bus : out Def_data;
@@ -71,7 +71,7 @@ begin
 
           -- priority map last impaire
           if ((IT_size mod 2) = 1 and addr = addr_vect_priorite + IT_size - 1) then
-            d_bus <= (0 to 2 => vect_priorite(IT_size - 1));
+            d_bus <= (0 to 2 => vect_priorite(IT_size - 1), (others => '0') );
           end if;
 
         end if; -- CS AS RnW
