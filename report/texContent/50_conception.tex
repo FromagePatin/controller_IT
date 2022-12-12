@@ -25,6 +25,8 @@ La figure ci-dessous présente le circuit interne observé de l'intérieur avec 
 	\label{fig:decomposition_fonctionnelle}
 \end{figure}
 
+\newpage
+
 Le bloc \texttt{Traitement} est chargé de signaler le CPU d'une interruption à traiter à la suite de multiples opérations (traitement des priorités, opération de masquage, mise en suspens).
 Le bloc \texttt{Interface} permet de faire la jonction entre les signaux de contrôle et bus du système à microprocesseur et l'IP à concevoir.
 \texttt{Ack\_Read} est en sortie du bloc \texttt{Interface} et avertit le bloc \texttt{Traitement} de la lecture de l'adresse de branchement.
@@ -46,7 +48,12 @@ Ce bloc est composé de \texttt{Interface\_Write} et \texttt{Interface\_Read}.
 Cette décomposition en bloc hiérarchique permet de mettre en lumière deux fonctions du bloc \texttt{Interface}.
 Celui-ci peut écrire dans les registres du contrôleur d'interruptions par le biais du bloc \texttt{Interface\_Write} et les lire avec \texttt{Interface\_Read}.
 
+\newpage
+
 \subsection{Raffinage du bloc \texttt{Traitement}}
+
+Après le raffinage du bloc \texttt{Interface}, il s'agit désormais de décrire le point de vue interne du bloc \texttt{Traitement}.
+La structure est donnée ci-dessous.
 
 \begin{figure}[H]
 	\centering
@@ -54,6 +61,14 @@ Celui-ci peut écrire dans les registres du contrôleur d'interruptions par le b
 	\caption{Raffinage et décomposition du bloc \texttt{Traitement}}
 	\label{fig:raffinage_traitement}
 \end{figure}
+
+Ce bloc présente trois éléments appelés respectivement \texttt{Gestion adresse de branchement}, \texttt{Solutionneur de priorité} et \texttt{Masquage}.
+Le bloc \texttt{Masquage} utilise les 15 interruptions ainsi que le registre masque pour filtrer les interruptions que l'utilisateur souhaite traiter.
+Le sous-bloc \texttt{Solutionneur de priorité} est utilisé pour traiter les interruptions selon leur niveau de priorité et d'indiquer l'identifiant de l'interruption à traiter.
+Le signal \texttt{Is\_prio\_active} informe au bloc \texttt{Gestion adresse de branchement} si l'interruption en cours de traitement est toujours active, c'est-à-dire à l'état bas.
+Le bloc \texttt{Gestion adresse de branchement} récupère l'identifiant de l'IT correspondant à l'indice du registre @handler contenant l'adresse de branchement à placer dans @blx.
+Pour que le processeur puisse lire l'adresse de branchement le signal nIT\_CPU est activé.
+Suite à la lecture de la part du processeur le signal Ack\_Read est actif afin d'informer le contrôleur d'interruption la fin de la phase de lecture et remettre nIT\_CPU à l'état logique '1'.  
 
 \newpage
 
@@ -166,3 +181,72 @@ begin
 end cycle;
 end Interface_Read;
 \end{lstlisting}
+
+\newpage
+
+\subsubsection{Algorithme \texttt{Masquage}}
+
+L'algorithme ci-dessous est celui du bloc \texttt{Masquage}.
+Le langage utilisé est également le Pascal.
+Le type \texttt{Def\_IT\_xxx} est un entier de 0 à 14. 
+
+\begin{lstlisting}[style=pascalstyle]
+action Masquage sur message nIT_xxx avec
+(
+entree var nIT_xxx 			: Def_IT_xxx;
+entree var mask 			: Def_masque;
+sortie var nIT_xxx_masked 	: Def_IT_xxx;
+);
+
+begin
+
+cycle:
+begin
+	nIT_xxx_masked := nIT_xxx and not mask;
+end cycle;
+end Masquage;
+\end{lstlisting}
+
+\subsubsection{Algorithme \texttt{Solutionneur de priorité}}
+
+\begin{lstlisting}[style=pascalstyle]
+action Solutionneur_de_priorite sur message nIT_xxx avec
+(
+entree var nIT_xxx 				: Def_IT_xxx;
+entree var priority_vector 		: Def_array_prio;
+sortie var id_it 				: Def_ID;
+);
+
+var max_prio 					: Def_max_prio = 0;
+var temp_id_it 					: Def_ID = 0;
+var IT_size 					: integer = 15;
+var ID 							: Def_ID;
+
+begin
+
+cycle:
+begin
+	cycle H:
+	begin
+		for i := 0 to IT_size-1 do
+		begin
+			if nIT_xxx(i) = 1 then
+			begin
+				if priority_vector(i) > max_prio then
+				begin
+					max_prio := priority_vector(i);
+					temp_id_it := ID(i);
+				else if (priority_vector(i)=max_prio) and (i>temp_id_it) then
+					temp_id_it := ID(i);
+				end if;	
+			end if;
+		end for;
+	end cycle H;
+
+	it_it := temp_id_it;
+
+end cycle;
+end Solutionneur_de_priorite;
+\end{lstlisting}
+
+\subsubsection{Algorithme \texttt{Gestion adresse de branchement}}
