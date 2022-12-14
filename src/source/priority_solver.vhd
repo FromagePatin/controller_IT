@@ -25,12 +25,15 @@ entity priority_solver is
   port (
     nIT_xxx : in unsigned(IT_size - 1 downto 0);
     priority_vector : in t_array_prio(IT_size -1 downto 0); -- := ("11", "01", "10", "00");
-    id_it : out unsigned(NB_BIT_IT - 1 downto 0)
+    id_it : out unsigned(NB_BIT_IT - 1 downto 0);
+    is_IT_active : out std_logic
   );
 end entity priority_solver;
 
 architecture arch_priority_solver of priority_solver is
 begin
+
+is_IT_active <= or nIT_xxx;
 
   process (nIT_xxx)
     variable max_prio : unsigned(NB_BIT_PRIO - 1 downto 0) := to_unsigned(0, NB_BIT_PRIO);
