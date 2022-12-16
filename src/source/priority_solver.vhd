@@ -16,21 +16,20 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
-use IEEE.std_logic_unsigned.all;
+--use IEEE.std_logic_unsigned.all;
 
-use work.priority_solver_pkg.all;
 use work.controller_it_package.all;
 
 entity priority_solver is
   port (
     nIT_xxx : in unsigned(IT_size - 1 downto 0);
-    priority_vector : in t_array_prio(IT_size -1 downto 0); -- := ("11", "01", "10", "00");
+    priority_vector : in Def_vect_priorite;
     id_it : out unsigned(NB_BIT_IT - 1 downto 0);
     is_IT_active : out std_logic
   );
 end entity priority_solver;
 
-architecture arch_priority_solver of priority_solver is
+architecture Arch of priority_solver is
 begin
 
 is_IT_active <= or nIT_xxx;
@@ -70,4 +69,4 @@ is_IT_active <= or nIT_xxx;
 
 end process;
 
-end architecture arch_priority_solver;
+end architecture Arch;

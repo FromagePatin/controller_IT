@@ -15,11 +15,9 @@
 
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
-use IEEE.std_logic_unsigned.all;
-
-use work.priority_solver_pkg.all;
-use work.controller_it_package.all;
+use IEEE.Numeric_Std.all;
+library work;
+use work.controller_IT_package.all;
 
 entity gestion_blx is
   port (
@@ -34,7 +32,7 @@ entity gestion_blx is
   );
 end entity;
 
-architecture arch of gestion_blx is
+architecture Arch of gestion_blx is
   type state_t is (WAIT_IT, WAIT_READ, NEXT_IT);
   signal state : state_t;
   signal prev_id_it : unsigned(NB_BIT_IT - 1 downto 0);
@@ -92,4 +90,4 @@ begin
       end case;
     end if; -- nRST
   end process;
-end architecture;
+end architecture Arch;

@@ -8,7 +8,7 @@ FILES = source/*
 VHDLEX = .vhd
 
 # testbench
-TB_FILE = priority_solver_tb
+TB_FILE = global_tb
 TB_PATH = testbench/${TB_FILE}$(VHDLEX)
 
 #GHDL CONFIG
@@ -22,19 +22,23 @@ GHDL_SIM_OPT = --stop-time=$(STOP_TIME)
 GHDL_FLAGS  += --std=08
 GHDL_FLAGS  += -fsynopsys
 
+
 WAVEFORM_VIEWER = gtkwave
+
+WORK=work
 
 .PHONY: clean
 
 all: clean make run #view
 
 syntax:
-	$(GHDL_CMD) -s  $(GHDL_FLAGS) --workdir=simulation --work=work $(FILES)
+	$(GHDL_CMD) -s  $(GHDL_FLAGS) --workdir=simulation --work=$(WORK) $(FILES)
 
 compile:
-	$(GHDL_CMD) -i $(GHDL_FLAGS) --workdir=simulation --work=work $(TB_PATH) $(FILES)
+	$(GHDL_CMD) -a $(GHDL_FLAGS) --workdir=simulation --work=$(WORK) $(FILES)
+	$(GHDL_CMD) -i $(GHDL_FLAGS) --workdir=simulation --work=$(WORK) $(TB_PATH) $(FILES)
 #	-i [OPTS] FILEs    Import units of FILEs
-	$(GHDL_CMD) -m  -g $(GHDL_FLAGS) --workdir=simulation --work=work $(TB_FILE)
+	$(GHDL_CMD) -m  -g $(GHDL_FLAGS) --workdir=simulation --work=$(WORK) $(TB_FILE)
 #	-m [OPTS] UNIT [ARCH]  Make UNIT
 #		 -g Generate debugging informations
 
@@ -50,6 +54,6 @@ view:
 	gtkwave ./$(SIMDIR)/wave.ghw
 
 clean:
-	@$(GHDL_CMD) --clean --workdir=simulation --work=work
+	@$(GHDL_CMD) --clean --workdir=simulation --work=$(WORK)
 	@rm -rf $(SIMDIR)
 

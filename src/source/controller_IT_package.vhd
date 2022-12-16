@@ -19,6 +19,7 @@ package controller_IT_package is
   subtype Def_EN is Def_bit;
   subtype Def_masque is unsigned(IT_size - 1 downto 0);
   subtype Def_pending is unsigned(IT_size - 1 downto 0);
+  subtype Def_IT is unsigned(IT_size - 1 downto 0);
 
   type Def_Branch is record
     blx : Def_addr;
@@ -47,6 +48,13 @@ package controller_IT_package is
   constant addr_pending : Def_addr := (2 => '1', others => '0'); -- 0x4
   constant addr_blx : Def_addr := (1 => '1', 2 => '1', others => '0'); --0x6
   constant addr_vect_handler : Def_addr := (3 => '1', 1 => '1', others => '0'); --0xA
-  constant addr_vect_priorite : Def_addr := (6 => '1', 2 => '1', others => '0'); --0x44
+  constant addr_vect_priorite : Def_addr := (1 => '1', 2 => '1', 6 => '1', others => '0'); --0x46
   
+  -- priority solver
+  constant NB_BIT_IT : integer := 4;
+  constant NB_BIT_PRIO : integer := 3;
+  --   -- Creates an unconstrained array (MUST be constrained when defined!)
+  --   -- https://nandland.com/arrays/
+  type t_array_prio is array (integer range <>) of unsigned(NB_BIT_PRIO - 1 downto 0);
+
 end controller_IT_package;
