@@ -90,7 +90,27 @@
 }
 
 
-
+\lstdefinelanguage{VHDL}{
+  morekeywords={
+    library,use,all,entity,is,port,in,out,end,architecture,of,
+    begin,and, always, posedge
+  },
+  morecomment=[l]--
+}
+\lstdefinestyle{vhdl}{
+  language     = VHDL,
+  frame=single,
+  tabsize=4,
+  captionpos=b,
+  numbers=left,
+  commentstyle=\color{mGreen},
+  backgroundcolor=\color{white},
+  numberstyle=\color{gray},
+  keywordstyle=\color{blue} \textbf,
+  basicstyle = \ttfamily \color{black} \footnotesize,
+  numbers=left,
+  showstringspaces=false
+}
 
 
 
