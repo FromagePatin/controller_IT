@@ -141,7 +141,8 @@ entree var vect_handler 	: Def_vect_handler;
 entree var masque 			: Def_masque;
 entree var pending 			: Def_pending
 entree var blx 				: Def_blx;
-sortie var d_bus 			: Def_data
+sortie var d_bus 			: Def_data;
+sortie var Ack_Read			: Def_bit;
 );
 
 var TriState 				: HauteImpedance;
@@ -159,9 +160,10 @@ begin
 	cycle H:
 	begin
 	if (nRST=0) then
-		//ne rien faire
+		Ack_Read := 0;
 	end if;
 	d_bus := TriState;
+	Ack_Read := 0;
 	if (nCS_IT=0) et (RnW=1) et (nAS=0) then
 		case addr of
 		addr_EN:
@@ -176,6 +178,7 @@ begin
 			d_bus := pending;
 		addr_blx:
 			d_bus := blx;
+			Ack_Read := 1;
 	end if;
 	end cycle H;
 end cycle;
