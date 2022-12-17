@@ -21,6 +21,21 @@ Dans ce contexte, il est possible de moduler les signaux d'entrée de manière p
 Il serait naïf pour un ingénieur débutant de négliger cette étape en passant directement à la phase d'intégration.
 En effet, elle permet d'identifier un certain nombre d'erreurs et de les résoudre dans un environnement de test simplifié.
 Dans un cadre industriel cela permet de limiter les coûts d'intégration \cite{Calvez_2}.
+\subsubsection{Interface Write}
+Le bloc d'interface write synchrone à l'horloge du système s'inscrit dans le bloc interface et permet la frontière entre les bus et signaux de contrôle du processeur et les registres et signaux internes du contrôleur d'interruptions.
+Il s'agit dans ce test unitaire de valider le bon fonctionnement de l'écriture de valeurs dans les registres.
+Cela est réalisé en plaçant une valeur à écriture dans le bus de données, et placer dans le bus d'adresse l'adresse du registre.
+Ainsi à chaque front montant de l'horloge, si les signaux nCS\_IT, nAS et RnW sont à l'état bas alors l'écriture est effectuée.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{chrono_interface_write.png}
+	\caption{Chronogramme validation de l'interface write}
+	\label{fig:chrono_interface_write}
+\end{figure}
+Les chronogrammes ci-dessus représente le résultat de la simulation de l'interface d'écriture.
+Au démarrage de la simulation, le signal de réinitialisation est actif à l'état bas.
+Il y a donc une demande de reset qui est prise en compte au premier front montant de l'horloge et inscrit pour chaque registre interne la valeur 0.
+Puis des cycles d'écriture sont réalisés dans l'ordre suivant, écriture dans le registre d'activation de l'IP EN, écriture dans le registre de masquage des IT et écriture successive dans le tableau des routines d'interruptions.
 \subsubsection{Solutionneur de priorités}
 Le bloc solutionneur de priorités prend en entrée les 15 sources d'interruptions provenant des autres périphériques et le registre des priorités.
 Il doit, à partir de cela, présenter en sortie le numéro de l'interruption active la plus prioritaire.

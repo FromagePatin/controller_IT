@@ -73,8 +73,10 @@ Suite à la lecture de la part du processeur le signal Ack\_Read est actif afin 
 \newpage
 
 \subsection{Écriture des algorithmes}
-
 \subsubsection{Algorithme \texttt{Interface\_Write}}
+
+L'algorithme ci-dessous représente le comportement de \texttt{Interface\_Write}.
+Ce bloc permet l'écriture synchrone par le processeur dans les registres internes du contrôleur d'interruption. 
 
 \begin{lstlisting}[style=pascalstyle]
 action Interface_Write sur clk avec
@@ -102,23 +104,23 @@ cycle:
 begin
 	cycle H:
 	begin
-	if (nRST=0) then
-		EN := 0;
-		priorite := 0;
-		vect_handler := 0;
-		masque := 0;
-	end if;
-	if (nCS_IT=0) et (RnW=0) et (nAS=0) then
-	case addr of
-	addr_EN:
-		EN := d_bus;
-	addr_masque:
-		masque := d_bus;
-	addr_vect_handler:
-		vect_handler := d_bus;
-	addr_vect_priorite:
-		vect_priorite := d_bus;
-	end if;
+		if (nRST=0) then
+			EN := 0;
+			priorite := 0;
+			vect_handler := 0;
+			masque := 0;
+		end if;
+		if (nCS_IT=0) et (RnW=0) et (nAS=0) then
+			case addr of
+			addr_EN:
+				EN := d_bus;
+			addr_masque:
+				masque := d_bus;
+			addr_vect_handler:
+				vect_handler := d_bus;
+			addr_vect_priorite:
+				vect_priorite := d_bus;
+		end if;
 	end cycle H;
 end cycle;
 end Interface_Write;
@@ -127,8 +129,15 @@ end Interface_Write;
 \newpage
 \subsubsection{Algorithme \texttt{Interface\_Read}}
 
+L'algorithme ci-dessous représente le comportement de \texttt{Interface\_Read}.
+Ce bloc permet la lecture asynchrone par le processeur dans les registres internes du contrôleur d'interruption.
+Un cas particulier est à considérer lors de la lecture de l'adresse de branchement blx.
+Le signal Ack\_Read passe à l'état logique 1 pour un cycle horloge afin de signaler au bloc \texttt{Traitement} la lecture de l'adresse de branchement par le processeur.
+Ack\_Read est utilisé comme condition de transition de la machine état \texttt{Gestion adresse de branchement}.
+
 \begin{lstlisting}[style=pascalstyle]
-action Interface_Read sur clk avec
+action Interface_Read sur message nRST, EN, vect_priorite, vect_handle,
+masque, pending, blx avec
 (
 entree var addr 			: Def_addr;
 entree var nCS_IT 			: Def_Bit;
@@ -157,8 +166,6 @@ begin
 
 cycle:
 begin
-	cycle H:
-	begin
 	if (nRST=0) then
 		Ack_Read := 0;
 	end if;
@@ -180,7 +187,6 @@ begin
 			d_bus := blx;
 			Ack_Read := 1;
 	end if;
-	end cycle H;
 end cycle;
 end Interface_Read;
 \end{lstlisting}
@@ -212,16 +218,20 @@ end Masquage;
 
 \subsubsection{Algorithme \texttt{Solutionneur de priorité}}
 
+Il s'agit ensuite de l'algorithme représentant le comportement du sous-bloc \texttt{Solutionneur de priorité}.
+Lors du passage à l'état logique 1 d'une des interruptions, la priorité correspondante à cette IT est évaluée avec la priorité max (c'est-à-dire la priorité de l'interruption en cours).
+Si la priorité de la \texttt{i}-ème IT est supérieure à la priorité de l'IT en cours, celle-ci passe comme IT à traiter.
+
 \begin{lstlisting}[style=pascalstyle]
 action Solutionneur_de_priorite sur message nIT_xxx avec
 (
 entree var nIT_xxx 				: Def_IT_xxx;
-entree var priority_vector 		: Def_array_prio;
-sortie var id_it 				: Def_ID;
+entree var priority_vector 		: Def_vect_priorite;
+sortie var ID_IT 				: Def_ID;
 );
 
-var max_prio 					: Def_max_prio = 0;
-var temp_id_it 					: Def_ID = 0;
+var max_prio 					: integer = 0;
+var temp_ID_IT 					: Def_ID = 0;
 var IT_size 					: integer = 15;
 var ID 							: Def_ID;
 
@@ -229,27 +239,87 @@ begin
 
 cycle:
 begin
-	cycle H:
+	for i := 0 to IT_size-1 do
 	begin
-		for i := 0 to IT_size-1 do
-		begin
-			if nIT_xxx(i) = 1 then
-			begin
-				if priority_vector(i) > max_prio then
-				begin
-					max_prio := priority_vector(i);
-					temp_id_it := ID(i);
-				else if (priority_vector(i)=max_prio) and (i>temp_id_it) then
-					temp_id_it := ID(i);
-				end if;	
-			end if;
-		end for;
-	end cycle H;
+		if nIT_xxx(i) = 1 then
+			if priority_vector(i) > max_prio then
+				max_prio := priority_vector(i);
+				temp_ID_IT := ID(i);
+			else if (priority_vector(i)=max_prio) and (i>temp_ID_IT) then
+				temp_ID_IT := ID(i);
+			end if;	
+		end if;
+	end for;
 
-	it_it := temp_id_it;
+	ID_IT := temp_ID_IT;
 
 end cycle;
 end Solutionneur_de_priorite;
 \end{lstlisting}
 
+\newpage
+
 \subsubsection{Algorithme \texttt{Gestion adresse de branchement}}
+
+Pour finir il reste l'algorithme de \texttt{Gestion adresse de branchement}.
+Il s'agit d'une machine état séquentielle finie chargée de signaler le CPU d'une IT à traiter, placer l'adresse de la routine d'interruption dans le registre blx et attendre la lecture.
+Il est possible de remarquer la structure typique d'une machine à état finie.
+Il y a le bloc de sortie de la machine à état finie qui est combinatoire puis le bloc calculant l'état suivant synchrone à l'horloge du système.   
+
+
+
+\begin{lstlisting}[style=pascalstyle]
+action Gestion_blx sur clk, message nRST, message state avec
+(
+entree var clk 				: Def_bit;
+entree var nRST 			: Def_bit;
+entree var ID_IT 			: Def_ID;
+entree var Ack_Read 		: Def_bit;
+entree var Is_IT_active 	: Def_bit;
+entree var vect_handler 	: Def_vect_handler;
+sortie var nIT_CPU 			: Def_bit;
+sortie var blx 				: Def_addr;
+);
+
+var state 					: Def_state;
+var prev_ID_IT 				: Def_ID;
+
+begin
+
+cycle:
+begin
+	if nRST = 0 then
+		state := WAIT_IT;
+		prev_ID_IT := 0;
+		nIT_CPU := 1;
+		blx := 0;
+	else
+		case state of
+		WAIT_READ :
+			prev_ID_IT := ID_IT;
+			nIT_CPU := 0;
+			blx := vect_handler(ID_IT);
+		NEXT_IT :
+			nIT_CPU := 1;
+	end if;
+	cycle H:
+	begin
+		case state of
+		WAIT_IT :
+			if is_IT_active = 1 then
+				state := WAIT_READ;
+			end if;
+		WAIT_READ :
+			if Ack_Read = 1 then
+				state := NEXT_IT;
+			end if;
+		NEXT_IT :
+			if prev_ID_IT <> ID_IT then
+				state := WAIT_READ;
+			else if 
+				state := WAIT_IT;
+			end if;
+	end cycle H;
+end cycle;
+end Gestion_blx;
+\end{lstlisting}

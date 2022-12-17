@@ -160,9 +160,9 @@ Une interruption en cours ne peut être interrompue que par une interruption de 
 Lorsque le processeur acquitte la fin du traitement, les interruptions de niveaux inférieurs ou égaux peuvent être à nouveau considérées comme valides.
 Le contrôleur fournir un niveau de priorité par défaut pour chaque source.
 La troisième fonction concerne le masquage des sources d'interruption individuellement.
-Une source masquée ne génèrera pas de signal au processeur.
+Une source masquée ne générera pas de signal au processeur.
 Un événement déjà en cours de traitement par le contrôleur ne pourra être masqué. %TODO à confirmer
-Si un signal d'interruption est généré alors qu'il est masqué, il est ignoré, mais s'il est démasqué alors qu'il est toujours actif alors il sera pris en compte. (\hl{A confirmer})
+Si un signal d'interruption est généré alors qu'il est masqué, il est ignoré, mais s'il est démasqué alors qu'il est toujours actif alors il sera pris en compte. %(\hl{A confirmer})
 La quatrième fonction principale spécifie le vecteur d'exception.
 Le contrôleur lorsque qu'il informe le processeur doit immédiatement lui indiquer vers quelle adresse il doit brancher.
 Il est possible de configurer une adresse par source.
@@ -173,7 +173,7 @@ Si aucune adresse n'est présente pour une source donnée alors une par défaut 
 	\centering
 	\begin{tabular}{|c|c|}
 		\hline
-		nom & Description                          \\ \hline
+		Nom & Description                          \\ \hline
 		fn1 & Informer le processeur               \\ \hline
 		fn2 & Gérer les niveaux de priorité        \\ \hline
 		fn3 & Masquer individuellement les sources \\ \hline
@@ -200,35 +200,35 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 		\hline
 		ID & Interruptions correspondantes & Adresses de branchement par défaut\\
 		\hline
-		0 & nIT\_ext0 & \\
+		0 & nIT\_ext0 & 0x010000\\
 		\hline
-		1 & nIT\_ext1 & \\
+		1 & nIT\_ext1 & 0x010064\\
 		\hline
-		2 & nIT\_ext2 & \\
+		2 & nIT\_ext2 & 0x0100C8\\
 		\hline
-		3 & nIT\_ext3 &\\
+		3 & nIT\_ext3 & 0x01012C\\
 		\hline
-		4 & nIT\_RTC &\\
+		4 & nIT\_RTC & 0x010190\\
 		\hline
-		5 & nIT\_TC\_PWM &\\
+		5 & nIT\_TC\_PWM & 0x0101F4\\
 		\hline
-		6 & nIT\_pos\_vit &\\
+		6 & nIT\_pos\_vit & 0x010258\\
 		\hline
-		7 & nIT\_FFTA &\\
+		7 & nIT\_FFTA & 0x0102BC\\
 		\hline
-		8 & nIT\_NNA &\\
+		8 & nIT\_NNA & 0x010320\\
 		\hline
-		9 & nIT\_SPI &\\
+		9 & nIT\_SPI & 0x010384\\
 		\hline
-		10 & nIT\_PCI &\\
+		10 & nIT\_PCI & 0x0103E8\\
 		\hline
-		11 & nIT\_UART &\\
+		11 & nIT\_UART & 0x01044C\\
 		\hline
-		12 & nIT\_I2C &\\
+		12 & nIT\_I2C & 0x0104B0\\
 		\hline
-		13 & nIT\_CAN &\\
+		13 & nIT\_CAN & 0x010514\\
 		\hline
-		14 & nIT\_DMA &\\
+		14 & nIT\_DMA & 0x010578\\
 		\hline
 	\end{tabular}
 	\caption{Vecteurs d'interruptions}
