@@ -162,53 +162,54 @@ La priorité par défaut de chaque entrée pourra également être modifiée.
 Le second type de communication a pour but de notifier le \gls{CPU} lors d'interruptions.
 Elles peuvent provenir des autres périphériques présents dans le microcontrôleur ou de sources externes.
 L'objectif est d'informer le processeur via le signal nIT\_CPU en suivant le régime de priorités.
-La politique de sensibilité du périphérique est l'état des signaux et non les fronts.
-La gestion d'une interruption commence lorsque le signal émmeteur passe à l'état bas et s'achève lorsque  qu'il passe à l'état haut. 
-L'état du signal doit être maintenu au minimum pendant un cyle d'horloge pour qu'il soit valide. %TODO valider si cette information n'est pas trop contraignante pour la conception du controlleur d'IT.
+La sensibilité du périphérique est définie sur l'état des signaux et non les fronts.
+La gestion d'une interruption commence lorsque le signal émetteur passe à l'état bas et s'achève lorsqu'il passe à l'état haut. 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{chrono_specif_IT.png}
+	\includegraphics[width=0.7\linewidth]{chrono_specif_IT.draw.png}
 	\caption{Chronogramme spécification signal IT au processeur}
 	\label{fig:spe_IT}
 \end{figure}
-Le chronogramme figure \ref{fig:spe_IT} illustre le cas d'un signal d'interruption provenant d'un périphérique et la séquence induite concernant le signal nIT\_CPU.
-Une demande d'interruption s'identifie par le passage à l'état bas de nIT\_xxx. 
-Après quelques cycles de traitement visant à confirmer la validité de la requête en consultant le registre de masquage, le processeur est informé, lui aussi, par le passage à l'état bas sur nIT\_CPU.
+Le chronogramme figure \ref{fig:spe_IT} illustre le cas d'un signal d'interruption provenant d'un périphérique et la séquence induite concernant le signal \texttt{nIT\_CPU}.
+Une demande d'interruption s'identifie par le passage à l'état bas de \texttt{nIT\_xxx}. 
+Après 1 cycle de traitement visant à confirmer la validité de la requête en consultant le registre de masquage, le processeur est informé, lui aussi, par le passage à l'état bas sur \texttt{nIT\_CPU}.
 Il sauvegarde alors le contexte et lit le registre de branchement.
-Cette action agit comme un \textbf{acquittement} et le signal nIT\_CPU est passé à l'état haut.
+Cette action agit comme un \textbf{acquittement} et le signal \texttt{nIT\_CPU} est passé à l'état haut.
 Le processeur se charge d'informer le périphérique émetteur, souvent à la fin de la routine, afin qu'il baisse le drapeau dans son registre d'état.
 Tant que cela n'est pas fait, aucune demande d'interruption de niveau inférieur ou égal ne sera transmis.
 Le chronogramme figure \ref{fig:spe_IT} illustre justement le cas d'une demande \textbf{moins prioritaire} qui apparaît durant l'exécution d'une première.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{chrono_specif_IT.png}
+	\includegraphics[width=0.7\linewidth]{chrono_specif_2IT_1.draw.png}
 	\caption{Chronogramme spécification 2 signaux IT cas 1}
 	\label{fig:spe_IT_cas1}
 \end{figure}
-Dans cette situation, le périphérique d'indice 1 est plus prioritaire que celui d'indice 2. 
-La demande est faite comme précédemment en passant le signal nIT\_xx1 à l'état bas.
+Dans cette situation, le périphérique d'indice 2 est plus prioritaire que celui d'indice 1. 
+La demande est faite comme précédemment en passant le signal nIT\_xx2 à l'état bas.
 Le contrôleur réagit alors en informant le processeur.
 Pendant cette opération, une seconde interruption de niveau inférieur apparaît.
-Aucune réaction n'est attendu de la part du contrôleur qui attend la fin de l'exécution précédente pour générer un front descendant sur nIT\_CPU.
+Aucune réaction n'est attendu de la part du contrôleur qui attend la fin de l'exécution précédente pour générer un front descendant sur \texttt{nIT\_CPU}.
 Le traitement se déroule alors comme auparavant.
-Il est intéressant de porter l'attention sur la place que joue le signal nIT\_xx1 dans ce cas.
+Il est intéressant de porter attention sur la place que joue le signal \texttt{nIT\_xx2} dans ce cas.
 Son passage à l'état haut autorise de nouveau l'occurrence des interruptions de niveau inférieur ou égal.
 Il reviendra donc au développeur de placer cet acquittement en fin de routine d'interruption sans quoi la priorisation ne sera pas garantie.
 Pour poursuivre la description des contraintes temporelles, on peut identifier un second cas venant de paire avec le précédent.
 Le chronogramme figure \ref{fig:spe_2IT} illustre la situation où une demande \textbf{plus prioritaire} apparaît durant l'exécution d'une première.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{chrono_specif_2IT.jpg}
+	\includegraphics[width=0.8\linewidth]{chrono_specif_2IT.draw.png}
 	\caption{Chronogramme spécification 2 signaux IT cas 2}
 	\label{fig:spe_2IT}
 \end{figure}
-De nouveau, dans ce cas, le périphérique d'indice 1 est plus prioritaire que celui d'indice 2. 
-Une première demande provient du signal nIT\_xx2.
+De nouveau, dans ce cas, le périphérique d'indice 2 est plus prioritaire que celui d'indice 1. 
+Une première demande provient du signal \texttt{nIT\_xx1}.
 Mais durant son traitement, il apparaît, une seconde interruption de niveau supérieur.
-Le contrôleur attend alors la lecture du processeur pour la première avant de l'informer pour la seconde.
+Le contrôleur attend alors l'aquittement du \gls{CPU} pour la première avant de l'informer pour la seconde.
 Cela est primordial pour éviter toute incohérence dans l'état des registres.
+En effet, sans cette mesure, si une interruption intervient entre la lecture du MSB et du LSB, l'adresse de branchement est corrompue.
+Dans la figure \ref{fig:spe_2IT} ces zones dites "atomic" sont marquées en jaune.
 Lorsque le processeur a effectué la lecture servant d'acquittement, il est de nouveau notifié.
-Le signal nIT\_CPU doit alors rester au minimum un cycle horloge à l'état bas afin de générer un front descendant synchrone.
+Le signal \texttt{nIT\_CPU} doit alors rester au minimum un cycle horloge à l'état bas afin de générer un front descendant synchrone.
 La suite du cycle se passe comme précédemment pour le contrôleur d'IT.
 C'est le processeur qui gère le rétablissement du contexte de l'interruption de plus faible priorité.
 
@@ -229,7 +230,7 @@ Le rendu de l'IP et du rapport de conception s'effectuera la semaine 49.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{figure/planning.png}
+	\includegraphics[width=0.85\linewidth]{figure/planning.png}
 	\caption{Planification du projet avec ses jalons}
 	\label{fig:planning}
 \end{figure}
