@@ -89,7 +89,7 @@ begin
     d_bus <= (others => 'Z');
     nIT_xxx <= (others => '0');
 
-    wait until falling_edge(clk);
+    wait until rising_edge(clk);
     nRST <= '1';
     -- /* Enable CTRL IT */
     -- CTRL_IT->CTRL_IT_EN = 0x0001;
@@ -97,29 +97,85 @@ begin
     addr <= (others => '0');
     d_bus <= (others => '0');
 
-    wait until falling_edge(clk);
+
+
+
+
+    wait until rising_edge(clk);
+
+
+    write_handler : for i in 0 to (IT_size - 1) loop
+      -- i increment ID IT
+      addr <= addr_vect_handler + i * 4;
+      d_bus <= to_unsigned(i,data_bus_size);
+      wait until rising_edge(clk);
+      addr <= addr_vect_handler + i * 4 + 2;
+      d_bus <= (others => '0');
+      if(i/=IT_size-1) then
+        wait until rising_edge(clk);
+      end if;
+    end loop;
+    RnW <= '1';
+    d_bus <= (others => 'Z');
+    wait until rising_edge(clk);
+
+
+      -- handler address
+  handler_address_view_tb :
+  for i in 0 to (IT_size - 1) loop
+    -- i increment ID IT
+    addr <= addr_vect_handler + i * 4;
+    wait until rising_edge(clk);
+    addr <= addr_vect_handler + i * 4 + 2;
+    if(i/=IT_size-1) then
+      wait until rising_edge(clk);
+    end if;
+  end loop;
+
+
+    wait until rising_edge(clk);
+
+
+    wait until rising_edge(clk);
     --  /* Set handler addr */
-    -- CTRL_IT -> CTRL_IT_ADDR[nIT_UART] = & UART_Handler;
+    -- CTRL_IT -> CTRL_IT_ADDR[nIT_UART] = & UART_Handler; LSB
     RnW <= '0';
     addr <= addr_vect_handler + 11 * 4; -- UART 11th element
-    d_bus <= x"ff11"; -- 0xffff handler address
+    d_bus <= x"ffff"; -- 0xffff handler address
 
-    wait until falling_edge(clk);
+    wait until rising_edge(clk);
+
+    --  /* Set handler addr */
+    -- CTRL_IT -> CTRL_IT_ADDR[nIT_UART] = & UART_Handler; MSB
+    RnW <= '0';
+    addr <= addr_vect_handler + 11 * 4 + 2; -- UART 11th element
+    d_bus <= x"0011"; -- 0xffff handler address
+
+    wait until rising_edge(clk);
 
     --  /* Set handler addr */
     -- CTRL_IT -> CTRL_IT_ADDR[nIT_PCI] = & PCI_Handler;
     RnW <= '0';
-    addr <= addr_vect_handler + 10 * 4; -- UART 11th element
-    d_bus <= x"ff10"; -- 0xffff handler address
+    addr <= addr_vect_handler + 10 * 4; -- PCI 10th element LSB
+    d_bus <= x"ffff"; -- 0xffff handler address
 
-    wait until falling_edge(clk);
+    wait until rising_edge(clk);
+
+        --  /* Set handler addr */
+    -- CTRL_IT -> CTRL_IT_ADDR[nIT_PCI] = & PCI_Handler;
+    RnW <= '0';
+    addr <= addr_vect_handler + 10 * 4 + 2; -- PCI 10th element MSB
+    d_bus <= x"0010"; -- 0xffff handler address
+
+    wait until rising_edge(clk);
 
     -- CTRL_IT->prio[nIT_UART].ch = 0x3;
     -- CTRL_IT->prio[nIT_PCI].ch = 0x5;
     RnW <= '0';
     addr <= addr_vect_priorite + 10;-- PCI 11th element
     d_bus <= (X"0300" or x"0005", others => '0'); -- set prio 3
-    wait until falling_edge(clk);
+
+    wait until rising_edge(clk);
 
     -- /* Enable CTRL IT */
     -- CTRL_IT->CTRL_IT_EN = 0x0001;
@@ -127,52 +183,67 @@ begin
     addr <= (others => '0');
     d_bus <= (0 => '1', others => '0');
 
-    wait until falling_edge(clk);
-
+    wait until rising_edge(clk);
     RnW <= '0';
-    d_bus <= (others => 'Z') ;
+    d_bus <= (others => 'Z');
     nAS <= '1';
-    nIT_xxx <= (10=>'1', 11=>'1', others => '0');
+    wait until rising_edge(clk);
 
-    wait until falling_edge(clk);
+    nIT_xxx <= (10 => '1', 11 => '1', others => '0');
+
+    wait until rising_edge(clk);
+
+    -- Read msb of blx
+    nAS <= '0';
+    RnW <= '1';
+    d_bus <= (others => 'Z');
+    addr <= addr_blx +2;
+
+    wait until rising_edge(clk);
+
+        -- Read lsb of blx
+        nAS <= '0';
+        RnW <= '1';
+        d_bus <= (others => 'Z');
+        addr <= addr_blx;
     
+    wait until rising_edge(clk);
+    
+
+    nAS <= '1'; --bus unused
+    d_bus <= (others => 'Z');
+
+    -- clean PCI flag
+    nIT_xxx <= (11 => '1', others => '0');
+
+    wait until rising_edge(clk);
+    wait until rising_edge(clk);
+
+
+       -- Read msb of blx
+       nAS <= '0';
+       RnW <= '1';
+       d_bus <= (others => 'Z');
+       addr <= addr_blx +2;
+   
+    wait until rising_edge(clk);
+
     -- Read lsb of blx
     nAS <= '0';
     RnW <= '1';
-    d_bus <= (others => 'Z') ;
+    d_bus <= (others => 'Z');
     addr <= addr_blx;
 
-    wait until falling_edge(clk);
+    wait until rising_edge(clk);
 
     nAS <= '1'; --bus unused
-    d_bus <= (others => 'Z') ;
+    d_bus <= (others => 'Z');
 
     -- clean PCI flag
-    nIT_xxx <= (11=>'1', others => '0');
+    nIT_xxx <= (others => '0');
 
-    wait until falling_edge(clk);
-
-    
-    -- Read lsb of blx
-    nAS <= '0';
-    RnW <= '1';
-    d_bus <= (others => 'Z') ;
-    addr <= addr_blx;
-
-    wait until falling_edge(clk);
-
-    nAS <= '1'; --bus unused
-    d_bus <= (others => 'Z') ;
-
-    -- clean PCI flag
-    nIT_xxx <= ( others => '0');
-
-    wait until falling_edge(clk);
-
-
-    wait until falling_edge(clk);
-
-
+    wait until rising_edge(clk);
+    wait until rising_edge(clk);
 
     StopClock <= true;
     wait;

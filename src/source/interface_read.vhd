@@ -32,10 +32,9 @@ architecture Arch of interface_read is
 
 begin
 
-  Read : process (clk)
+  Read : process (addr,nCS_IT,RnW,nAS,blx)
   begin
   --d_bus <= TriState;
-  if rising_edge(clk) then
     d_bus <= TriState;
     Ack_Read <= '0';
     if (nRST='0') then
@@ -82,7 +81,7 @@ begin
   
       end if;
     end if;
-  end if;
   end process Read;
+
 
 end architecture Arch;

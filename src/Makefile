@@ -8,7 +8,7 @@ FILES = source/*
 VHDLEX = .vhd
 
 # testbench
-TB_FILE = global_tb
+TB_FILE = priority_solver_tb#global_tb
 TB_PATH = testbench/${TB_FILE}$(VHDLEX)
 
 #GHDL CONFIG
@@ -35,7 +35,7 @@ syntax:
 	$(GHDL_CMD) -s  $(GHDL_FLAGS) --workdir=simulation --work=$(WORK) $(FILES)
 
 compile:
-	$(GHDL_CMD) -a $(GHDL_FLAGS) --workdir=simulation --work=$(WORK) $(FILES)
+	$(GHDL_CMD) -a $(GHDL_FLAGS) --workdir=simulation --work=$(WORK) $(FILES) $(TB_PATH)
 	$(GHDL_CMD) -i $(GHDL_FLAGS) --workdir=simulation --work=$(WORK) $(TB_PATH) $(FILES)
 #	-i [OPTS] FILEs    Import units of FILEs
 	$(GHDL_CMD) -m  -g $(GHDL_FLAGS) --workdir=simulation --work=$(WORK) $(TB_FILE)

@@ -32,7 +32,7 @@ end entity priority_solver;
 architecture Arch of priority_solver is
 begin
 
-is_IT_active <= or nIT_xxx;
+is_IT_active <= not (and nIT_xxx);
 
   process (nIT_xxx)
     variable max_prio : unsigned(NB_BIT_PRIO - 1 downto 0) := to_unsigned(0, NB_BIT_PRIO);
@@ -47,7 +47,7 @@ is_IT_active <= or nIT_xxx;
     for i in 0 to IT_size - 1 loop
 
       -- if the source is enable
-      if nIT_xxx(i) = '1' then
+      if nIT_xxx(i) = '0' then
 
         -- if it is the highest priority
         if priority_vector(i) > max_prio then
@@ -61,7 +61,7 @@ is_IT_active <= or nIT_xxx;
 
       end if; -- >
 
-    end if; -- '1'
+    end if; -- '0'
 
   end loop;
 

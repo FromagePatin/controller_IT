@@ -28,18 +28,42 @@ Cela est réalisé en plaçant une valeur à écriture dans le bus de données, 
 Ainsi à chaque front montant de l'horloge, si les signaux nCS\_IT, nAS et RnW sont à l'état bas alors l'écriture est effectuée.
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{chrono_interface_write.png}
+	\includegraphics[width=0.95\linewidth]{chrono_interface_write.png}
 	\caption{Chronogramme validation de l'interface write}
 	\label{fig:chrono_interface_write}
 \end{figure}
-Les chronogrammes ci-dessus représente le résultat de la simulation de l'interface d'écriture.
+Les chronogrammes ci-dessus représentent le résultat de la simulation de l'interface écriture.
 Au démarrage de la simulation, le signal de réinitialisation est actif à l'état bas.
 Il y a donc une demande de reset qui est prise en compte au premier front montant de l'horloge et inscrit pour chaque registre interne la valeur 0.
 Puis des cycles d'écriture sont réalisés dans l'ordre suivant, écriture dans le registre d'activation de l'IP EN, écriture dans le registre de masquage des IT et écriture successive dans le tableau des routines d'interruptions.
+Comme le montre la figure \ref{fig:chrono_interface_write}, l'état des registres est bien maintenu par des bascules et les valeurs sont cohérentes.
+Cela valide le fonctionnement de l'interface d'écriture.
+
+\subsubsection{Interface Read}
+L'interface read permet au processeur de lire l'état des registres.
+Pour valider le comportement de ce bloc, une étape d'écriture préalable est nécessaire.
+On utilise pour cela le test précédent.
+Il faudra ensuite vérifier que le bus de données prenne bien les valeurs contenues dans les registres lorsque l'adresse correspondante est sélectionné.
+Une attention particulière doit être portée sur la conformité des chronogrammes vis-à-vis des spécifications du cahier des charges.
+Une lecture ne doit prendre qu'un cycle horloge.
+Pour cette raison l'entité est asynchrone.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.85\linewidth]{chrono_valide_read.png}
+	\caption{Chronogramme validation de l'interface read}
+	\label{fig:chrono_interface_read}
+\end{figure}
+La figure \ref{fig:chrono_interface_read} présente le test de l'interface.
+On effectue une lecture des adresses de branchement écrites dans le test précédent.
+On observe les valeurs incrémentées de 1 et espacé d'une lecture à zéro.
+Cette lecture correspond aux bits de poids forts.
+Le comportement est validé en comparant les adresses et valeurs des bus du test précédent avec ceux de la figure \ref{fig:chrono_interface_read}.
+Les contraintes de temps sont également respectées, car la lecture s'effectue un 1 cycle horloge.
+
 \subsubsection{Solutionneur de priorités}
 Le bloc solutionneur de priorités prend en entrée les 15 sources d'interruptions provenant des autres périphériques et le registre des priorités.
 Il doit, à partir de cela, présenter en sortie le numéro de l'interruption active la plus prioritaire.
-La gestion des interruptions n'étant pertinente, dans un processeur, que si la latence est réduite au minimum.
+La gestion des interruptions n'est pertinente, dans un processeur, que si la latence est réduite au minimum.
 C'est pourquoi nous avons fait le choix de concevoir une solution asynchrone qui assure sa fonction en moins d'un cycle horloge.
 La simulation suivante ne possède donc pas d'horloge.
 Les deux conditions de priorité sont testées.
@@ -48,7 +72,7 @@ La seconde, correspond au cas particulier où deux interruptions de même priori
 Dans cette situation, c'est l'identifiant le plus grand qui est sélectionné.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1.1\linewidth]{chrono_priority_solver.draw.png}
+    \includegraphics[width=0.6\linewidth]{chrono_priority_solver.png}
     \caption{Chronogramme validation solutionneur priorité}
     \label{fig:chrono_prio_solv}
 \end{figure}
@@ -96,7 +120,7 @@ On considère que la seconde est plus prioritaire que la première et doit donc 
 Nous cherchons à monter que cela n'est fait qu'après la prise en compte de la première.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{chrono_gestion_blx.draw.png}
+    \includegraphics[width=0.9\linewidth]{chrono_gestion_blx.draw.png}
     \caption{Chronogramme validation bloc gestion branchement}
     \label{fig:chrono_blx}
 \end{figure}
@@ -209,5 +233,6 @@ L'interruption PCI est considérée comme complètement traitée à 125ns sur la
 À l'instant suivant (135ns), le processeur est notifié pour prendre en compte la seconde, initialement moins prioritaire.
 Comme pour la première, l'adresse de branchement est placée dans le registre \texttt{blx}.
 La lecture par le processeur prend deux cycles.
-Toutes les interruptions sont traitées à 155ns, le signal \texttt{is\_it\_active} repasse à zéro.
+Toutes les interruptions sont traitées à 155ns, le signal \texttt{is\_it\_active} repasse à zéro.\\
+
 Le fonctionnement du périphérique est validé par ce test ayant pour ambition de s'approcher au maximum d'un cas réel.

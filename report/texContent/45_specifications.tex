@@ -200,35 +200,35 @@ Il n'est cependant pas précis et devra être traité avec la description détai
 		\hline
 		ID & Interruptions correspondantes & Adresses de branchement par défaut\\
 		\hline
-		0 & nIT\_ext0 & 0x010000\\
+		0 & nIT\_ext0 & 0x000000\\
 		\hline
-		1 & nIT\_ext1 & 0x010064\\
+		1 & nIT\_ext1 & 0x000000\\
 		\hline
-		2 & nIT\_ext2 & 0x0100C8\\
+		2 & nIT\_ext2 & 0x000000\\
 		\hline
-		3 & nIT\_ext3 & 0x01012C\\
+		3 & nIT\_ext3 & 0x000000\\
 		\hline
-		4 & nIT\_RTC & 0x010190\\
+		4 & nIT\_RTC & 0x000000\\
 		\hline
-		5 & nIT\_TC\_PWM & 0x0101F4\\
+		5 & nIT\_TC\_PWM & 0x000000\\
 		\hline
-		6 & nIT\_pos\_vit & 0x010258\\
+		6 & nIT\_pos\_vit & 0x000000\\
 		\hline
-		7 & nIT\_FFTA & 0x0102BC\\
+		7 & nIT\_FFTA & 0x000000\\
 		\hline
-		8 & nIT\_NNA & 0x010320\\
+		8 & nIT\_NNA & 0x000000\\
 		\hline
-		9 & nIT\_SPI & 0x010384\\
+		9 & nIT\_SPI & 0x000000\\
 		\hline
-		10 & nIT\_PCI & 0x0103E8\\
+		10 & nIT\_PCI & 0x000000\\
 		\hline
-		11 & nIT\_UART & 0x01044C\\
+		11 & nIT\_UART & 0x000000\\
 		\hline
-		12 & nIT\_I2C & 0x0104B0\\
+		12 & nIT\_I2C & 0x000000\\
 		\hline
-		13 & nIT\_CAN & 0x010514\\
+		13 & nIT\_CAN & 0x000000\\
 		\hline
-		14 & nIT\_DMA & 0x010578\\
+		14 & nIT\_DMA & 0x000000\\
 		\hline
 	\end{tabular}
 	\caption{Vecteurs d'interruptions}
@@ -254,7 +254,7 @@ Une vue détaillée par chacun d'eux est présentée ensuite.
 		\addlinespace[1ex] %Space between lines for tables
 		\textbf{Adresse}     & \textbf{Nom}           & \textbf{Type} & \textbf{Reset} & \textbf{Description}                 \\
 		\rhline
-		\texttt{0x00000000}  & CTRL\_IT\_EN           & RW            & 0x0000         & Registre activation contrôlleur d'IT \\
+		\texttt{0x00000000}  & CTRL\_IT\_EN           & RW            & 0x0000         & Registre activation contrôleur d'IT \\
 		\rhline
 		\texttt{0x00000002}  & CTRL\_IT\_MSQ          & RW            & 0x0000         & Registre de masquage                 \\
 		\rhline
@@ -470,6 +470,7 @@ Les éléments \texttt{handler} et \texttt{CTRL\_IT\_ADDR} sont définis comme d
 Concevoir conjointement l'organisation des registres et le programme C permet d'aboutir à un compromis entre complexité matérielle et logicielle.
 Par exemple, nous avons cherché à représenter la priorité sous forme d'un tableau d'octet.
 La complexité du \textit{VHDL} est acceptable et le développeur peut accéder à la priorité avec un tableau où l'indice est le numéro d'interruption.
+\newpage
 
 \begin{lstlisting}[style=CStyle]
 void UART_Handler(void)
@@ -498,7 +499,6 @@ L'adresse de la fonction \texttt{UART\_Handler} est affectuée dans le regsitre 
 Le périphérique est activé à nouveau à la fin de la configuration.
 Dans cet exemple, la fonction à appeler est créée, il revient à l'utilisateur de la compléter en prenant soit de la finir par acquitter sur le périphérique en question (clear flag).
 
-\newpage
 
 \subsection{Spécifications opératoires}
 
