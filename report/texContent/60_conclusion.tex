@@ -1,10 +1,26 @@
 \section{Conclusion}
 
 
-Pour conclure, la conception de l'IP contrôleur d'interruptions a été réalisée à l'aide de la méthode MCSE.
-Il s'agissait de rappeler le cahier des charges, de présenter les spécifications et la conception.
-Le principale avantage est d’effectuer une bonne structuration de sa conception, mais également de raisonner en faisant abstraction de la technologie utilisée. 
-Cela permet de ne pas se confiner dans une solution technique. 
-Également, la partie spécification est très utile pour dégrossir le cahier des charges ou pour réduire la complexité de conceptions lourdes, d’éviter les erreurs.
-La conception de SoC est basée sur la conception hiérarchique.
-L'IP est composée de blocs et de sous-blocs chacun vérifiés et validés individuellement puis en commun.
+Le projet SoC de l'option SETR était consacré à la conception d'une IP, plus particulièrement d'un contrôleur d'interruptions.
+Il s'agissait en se basant sur un cahier des charges, d'effectuer les phases de spécifications et conception à l'aide de la méthode MCSE.
+La réalisation par l'écriture des algorithmes en langage de description matériel a été obtenu par la suite.
+Cela était également accompagné de bancs de test afin de valider le bon comportement individuel et collectif des blocs hiérarchiques de l'IP.\\
+
+La spécification consistait en la caractérisation de l'environnement, définir les entrées et sorties et donner les fonctionnalités du circuit à concevoir.
+Cela a permis d'obtenir un comportement du contrôleur d'interruptions, sa structure mémoire interne à l'aide de la spécification des registres et l'emploi de l'IP.
+La conception était la mise en place des blocs et sous-blocs internes, leur organisation et leur comportement à l'aide d'algorithme haut-niveau.\\
+
+Le principal avantage de la MCSE est de structurer convenablement la spécification et la conception, en raffinant au fur et à mesure.
+Une telle méthodologie est adaptée à la conception de circuit numérique.
+En effet, la conception de systèmes sur puce est basée sur la conception hiérarchique.
+C'est-à-dire que la bonne conception d'une IP (ici une IP soft car décrit au niveau RTL et non GDSII) repose sur sa décomposition en blocs eux-mêmes décomposés en sous-blocs.
+Cela permet de vérifier et valider individuellement puis en commun l'ensemble des blocs.\\
+
+La suite de cette conception consisterait à émuler le contrôleur d'interruptions afin de valider fonctionnement son comportement sur une cible FPGA dotée d'un ensemble de ressources logiques.
+A l'aide d'outil comme Xilinx SDK, il serait par la suite possible de réaliser du codesign et valider le contrôleur d'interruptions d'un point de vue matériel et également logiciel.
+Si le souhait in fine est de graver le circuit sur silicium, des étapes d'implémentations physiques sont requises.
+Il s'agirait là de lancer une synthèse logique avec une technologie de cellules standards précises (45 nm par exemple).
+Suite à cela des boucles itératives d'analyse de temps et de consommation seraient effectuées sur différents scénarios PTV (Process de gravure, Température et Voltage) afin de corriger des violations de timing ou des surconsommations pouvant nuire au bon fonctionnement de l'IP.
+
+
+
