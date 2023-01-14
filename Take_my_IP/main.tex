@@ -1,0 +1,43 @@
+\documentclass[]{article}
+
+\include{conf} % latex configuration
+
+\begin{document}
+
+\include{texContent/01_first_page}
+
+\tableofcontents
+
+\vspace{1cm}
+\listoffigures
+
+\vspace{1cm}
+\listoftables
+
+
+\include{texContent/30_intro}
+
+% \include{texContent/40_cahier_des_charges}
+
+% \include{texContent/45_specifications}
+
+% \include{texContent/50_conception}
+
+% \include{texContent/55_validation}
+
+% \include{texContent/60_conclusion}
+
+
+\newpage
+\gls{CPU}
+\printunsrtglossary[type=acronym]
+
+\vspace*{1cm}
+\cite{Calvez_1}
+\bibliography{SoC_control_IT_test}{}
+\bibliographystyle{plain}
+
+
+
+
+\end{document}

@@ -1,3 +1,7 @@
+/.vscode
+# Temporary pdf
+main.pdf
+
 ## Core latex/pdflatex auxiliary files:
 *.aux
 *.lof
@@ -111,6 +115,7 @@ acs-*.bib
 *.glsdefs
 *.lzo
 *.lzs
+*.glstex
 
 # uncomment this for glossaries-extra (will ignore makeindex's style files!)
 # *.ist
