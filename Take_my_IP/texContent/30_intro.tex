@@ -1,22 +1,35 @@
-\vspace*{4cm}
-\section*{Résumé}
-% La méthodologie de conception de systèmes électroniques est une discipline essentielle lorsqu'il s'agit, dans le cadre d'une future carrière d'ingénieur, de réaliser un produit répondant aux besoins d'un client. 
-% Et ce domaine est d'autant plus indispensable dans un monde où les systèmes numériques sont de plus en plus complexes et leur conceptions demandent une bonne structuration et une réelle méthodologie. 
-% Ce rapport s'inscrit dans la présentation d'une conception d'un contrôleur d'interruption par l'utilisation d'une méthode précise, applicable dans un ensemble de secteurs d'activités comme l'automobile, le médical, l'aéronautique, maritime, que ce soit dans le civil ou le militaire.
-
-
-\newpage
-
-
-
 \section{Introduction}
 
 \subsection{Contextualisation}
-% La formation ETN (Électronique et technologies numériques) option SETR (Systèmes embarqués temps-réel) offerte par l'école polytechnique de l'Université de Nantes propose d'aborder diverses branches de l'électronique, des systèmes temps-réel aux systèmes à microprocesseur en passant par la conception de SoC (système sur puce). 
-% Cet ensemble de domaines techniques nécessite des compétences en matière de méthodologie de conception. Ce rapport s'inscrit dans la conception d'un contrôleur d'interruptions avec la méthode MCSE. 
-% La méthode MCSE (Méthode de conception des systèmes électroniques), née à Ireste par l'impulsion de Jean-Paul Calvez, cette méthode a été implantée au sein d'un outil nommée CoFluent rachetée par Intel\mbox{\textregistered } depuis 2011. Cette méthode fait désormais partie de la culture de la formation et constitue l'outil de conception premier de l'ingénieur ETN.\\
-% Ce rapport se décompose en diverses parties. 
-% Il s'agira dans un premier temps de rappeler le cahier des charges de la conception de l'IP contrôleur d'interruptions.
-% Pour l'ensemble de ce rapport, les diverses phases de spécifications et conceptions s'appuient sur les deux ouvrages de Jean-Paul Calvez. \cite{Calvez_1} \cite{Calvez_2} \\
-% Ce travail de conception a pour but de placer les étudiants dans un contexte industriel. Le cahier des charges fournit prend la forme d'un exemple réel où les spécifications du client sont exprimées.
+La formation ETN (Électronique et technologies numériques) option SETR (Systèmes embarqués temps-réel) offerte par l'école polytechnique de l'Université de Nantes propose d'aborder diverses branches de l'électronique, des systèmes temps-réel aux systèmes à microprocesseur en passant par la conception de SoC (système sur puce). 
+Cet ensemble de domaines techniques nécessite des compétences en matière de méthodologie de conception. 
+Ce rapport détaille la planification de l'intégration du contrôleur d'interruptions conçu dans le module E2.
+Il est question de mettre l'accent sur les compétences transverses et sur notre capacité à prendre du recul sur les notions acquises cette année.
+Il ne s'agit de faire le travail d'intégration, mais bien de le planifier, d'évaluer la charge de travail et anticiper les difficultés rencontrées.
+Le scénario suivant est donné et guide ce rapport.
+
+\gap
+
+\textit{ Vous êtes le chef d'un projet dont le résultat serait un SOC opérationnel mis en œuvre au sein d’un FPGA. 
+Ce SOC repose sur un processeur Zynq-PS. 
+La plate-forme devra intégrer à terme l'IP que vous avez conçue dans le cadre du module E2. 
+Vous devez présenter à votre responsable de service un dossier succinct mais convaincant du travail à mener afin d’effectuer l’intégration de votre IP au sein de la plate-forme. 
+Il s’agit de définir l'effort nécessaire pour aboutir à ce résultat, sachant que la solution fonctionnelle de l'IP existe en VHDL synthétisable car vous l'avez conçue, testée et validée.}
+
+\gap
+
+Le travail présenté, se positionne donc comme la suite logique du module E2.
+Il peut être intéressant de rappeler sur le cycle en V l'avancement du projet.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{cycle_v.draw.png}
+    \caption{Positionnement de l'intégration sur le cycle en V}
+    \label{fig:cycle_v}
+\end{figure}
+Sur ce cycle en V colorisé, représente en vert les étapes déjà réalisées et en rouge celle devant l'être pour finaliser le projet.
+Parmi les étapes manquantes, le scénario proposé n'évoque que l'intégration.
+Le test opérationnel sera donc laissé de côté.
+Le  cycle en V donne une vue globale où on visualise bien l'étape précédente et le résultat souhaité.
+
+
 

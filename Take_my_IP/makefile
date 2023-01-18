@@ -5,9 +5,13 @@ SOURCE = main
 OUT_DIR = ./temp
 LATEX_CMD = latex -output-format='pdf' -output-directory=$(OUT_DIR) $(SOURCE).tex
 
-draw_src = $(shell find ../schematics -type f -name "*.drawio.svg")
-draw_target = $(draw_src:../schematics/%.drawio.svg=./figure/%.drawio.png)
-#https://unix.stackexchange.com/questions/140912/no-target-error-using-make
+draw_src = $(shell find ./draw -type f -name "*.draw.svg")
+draw_target = $(draw_src:./draw/%.draw.svg=./figure/%.draw.png)
+
+# drawio_src = $(shell find ./draw -type f -name "*.drawio.svg")
+# drawio_target = $(drawio_src:./draw/%.drawio.svg=./figure/%.drawio.png)
+
+# #https://unix.stackexchange.com/questions/140912/no-target-error-using-make
 
 
 # Need install "latex" and "texlive-bibtex-extra"
@@ -22,12 +26,22 @@ draw_target = $(draw_src:../schematics/%.drawio.svg=./figure/%.drawio.png)
 #	$(LATEX_CMD)
 	mv ./temp/main.pdf ./$(PRJ_NAME).pdf
 
+# generate png from drawio
+#	Input svg file, <name>.drawio.svg
+#	Output png file, <name>.drawio.png
+#./figure/%.drawio.png: ./drawio/%.drawio.svg
+#	inkscape --export-area-drawing --export-dpi=300 --export-png=./$@ $<
+#	drawio -x -f png --quality=100 -o $@ $<
+
 # generate png from svg
 #	Input svg file, <name>.draw.svg
 #	Output png file, <name>.draw.png
-./figure/%.drawio.png: ../schematics/%.drawio.svg
-#	inkscape --export-area-drawing --export-dpi=300 --export-png=./$@ $<
-	drawio -x -f png --quality=100 -o $@ $<
+#./figure/%.draw.png: ./draw/%.draw.svg
+# for old inkscape version
+#	inkscape --export-area-drawing --export-dpi=300 --export-png=./$@ $< 
+# for new inkscape version
+#	inkscape --export-area-drawing --export-dpi=300 --export-type=png --export-filename=$(PWD)/$@ $(PWD)/$< 
+
 
 clean:
 	find . -name '*.aux' -delete
