@@ -30,7 +30,13 @@ Il est composé de ports AXI hautes performances fournissant un accès depuis la
 Ses quatre ports AXI allant de la PL aux CPUs (Processing System PS) sont configurables en tant qu'interface 32 bits ou 64 bits.
 C'est par cette interface que les échanges entre notre IP et le processeur auront lieu.
 
-\gap
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{figure/inside_IT_controller.png}
+	\caption{Structure du contrôleur d'interruptions compatible AXI4-Lite}
+	\label{fig:modif_IP}
+\end{figure}
+
 La particularité du contrôleur d'interruptions est d'avoir une seconde interface de communication avec les autres IPs.
 Cette dernière est formée de l'ensemble des signaux \texttt{nIT\_xxx} indicateurs d'une requête d'interruption.
 Le terme "les autres IP" fait référence aux IPs "sur mesure" implémentées dans la PL et celle déjà présente dans l'"I/O peripherals" comme le SPI, l'UART, etc.

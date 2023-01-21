@@ -1,10 +1,12 @@
 \section{Gestion du projet}
 
+\subsection{Planification}
+
 %Ceci est une idée de structure
 Cette partie présente une estimation de l'effort en temps pour deux ingénieurs.
-Elle se présente sous forme d'un planning définie à l'échelle de la journée.
+Elle se présente sous forme d'un planning défini à l'échelle de la journée.
 La figure \ref{fig:planification} illustre l'organisation du travail.
-L'axe temporel est horizontal, à droite on retrouve le planning de Bob et à droite celui de Léa, nommés aussi par convention.
+L'axe temporel est horizontal, à gauche on retrouve le planning de Bob et à droite celui de Alice.
 
 \begin{figure}[H]
 	\centering
@@ -19,7 +21,7 @@ Bob se charge de mettre en place l'environnement de développement matériel pen
 Il devra ajouter l'IP au sein de la plateforme existante en l'interconnectant au bus AXI et aux signaux d'interruptions.
 Les blocs ILAs sont ajoutés dès la première synthèse.
 La préparation de la cible fait référence à tout ce qui touche à la carte physique et sa bonne connexion au PC de développement.
-Pendant ce même temps Alice commence à s'approprier les ressources logicielles et notamment l'implémentation des deux cortex A9 qui, selon nous représente des difficultés importantes.
+Pendant ce même temps Alice commence à s'approprier les ressources logicielles et notamment l'implémentation des deux Cortex-A9 qui, selon nous représente des difficultés importantes.
 Elle rédige ensuite, le premier programme de test visant à valider le bon fonctionnement des lectures écritures.
 Cette tâche semble plutôt simple, mais nous considérons qu'Alice n'est pas experte de la carte Zynq-7000 et qu'elle doit donc trouver ses marques.
 Une fois le développement des programmes de test lancé, les deux ingénieurs devront rédiger la documentation de leur travail en parallèle.
@@ -28,7 +30,7 @@ Valable aussi pour 3 et 2.
 La rédaction des programmes peut elle commencer avant la validation du test n-1.
 Bien qu'il existe de nombreuses dépendances entre les tâches, cette seconde propriété devrait apporter de la flexibilité au projet.
 L'équipe de développement étant constituée de deux membres, le temps de réunion n'a pas été explicitement défini, mais a été intégré directement aux tâches.
-Leur communication est essentielle et devra se faire en continu.
+Leur communication est essentielle et devra se faire en continue.
 
 
 
@@ -52,24 +54,42 @@ Leur communication est essentielle et devra se faire en continu.
 %Programme de tests marche pas
 %Temps de synthèse négligé
 
+La sous-section suivante traite des risques potentiels lors de la phase d'intégration.
+La matrice des risques ci-dessous présente 3 risques identifiés.
+
 \begin{table}[H]
 	\centering
-	\begin{tabular}{|p{2cm}|c|c|c|c|}
+	\begin{tabular}{|p{2cm}|c|c|c|}
 		\hline
-		occurrence \newline gravité &1	& 2 & 3 \\ \hline
-		1	&  \cellcolor{green} & B \cellcolor{green} & A \cellcolor{orange} \\ \hline
-		2	& \cellcolor{green}	& E \cellcolor{orange}	& \cellcolor{red} \\ \hline
-		3	& D \cellcolor{orange}	& C	\cellcolor{red}& \cellcolor{red}\\ \hline
+		Occurrence \newline Gravité &1	& 2 & 3 \\
+		\hline
+		1	&  \cellcolor{green} & \cellcolor{green} & \cellcolor{orange}\\
+		\hline
+		2	& \cellcolor{green}	& A \cellcolor{orange}	& C\cellcolor{red}\\
+		\hline
+		3	& B \cellcolor{orange}	&	\cellcolor{red}& \cellcolor{red}\\
+		\hline
 	\end{tabular}
 	\hspace{2cm}
 	\begin{tabular}{|c|c|}
 		\hline
 		Label & Risque \\ \hline
-		A	\cellcolor{orange} &	Communication \\ \hline
-		B	\cellcolor{green} &	Répartition du travail \\ \hline
-		C	\cellcolor{red} &	Ré-employabilité \\ \hline
-		D	\cellcolor{orange} &	Erreur de modélisation \\ \hline
-		E	\cellcolor{orange} &	Risque pandémique \\ \hline
+		A	\cellcolor{orange} & Une IP non fonctionnelle \\ \hline
+		B	\cellcolor{orange} &	Outils ne marchent pas \\ \hline
+		C	\cellcolor{red} &	Mauvaise gestion de projet \\ \hline
 	\end{tabular}
 	\caption{Matrice de sévérité et labels correspondants}
 \end{table}
+
+Le premier risque d'incidence moyenne est qu'une IP soit non fonctionnelle.
+Cela se produit suite à un problème lors de sa conception, en particulier lors des simulations (mauvaise couverture de tests fonctionnels).
+Le plan d'action a appliqué pour éviter ce risque est de vérifier les couvertures de tests de chaque IP.
+
+Il est possible que les outils (Xilinx Vivado, SDK ou le prototype Zynq-7000) soient non opérationnels.
+Afin d'anticipé ce risque, il est nécessaire d'avoir un plan de secours comme une nouvelle cible, une alternative aux outils d'intégration ou l'achat en plusieurs exemplaire du Zynq-7000.
+
+En ce qui concerne le label C, il s'agit d'un point à haut risque qu'il est impératif d'anticiper.
+Celui-ci porte sur une mauvaise gestion du projet, c'est-à-dire un mauvais calcul sur les compétences des ingénieurs.
+Il est peut-être nécessaire pour cette phase d'intégration d'agrandir l'équipe et avoir plus d'ingénieur, plus de temps ou de ressources (mais par conséquent implique une augmentation des coûts).
+Une réunion régulière pour faire un point sur la situation du projet une fois par semaine est une solution pour éviter ce risque.
+
