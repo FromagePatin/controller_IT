@@ -51,3 +51,25 @@ Leur communication est essentielle et devra se faire en continu.
 %Outils (Xilinx Vivado,Xilinx SDK) non fonctionnel
 %Programme de tests marche pas
 %Temps de synthèse négligé
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|p{2cm}|c|c|c|c|}
+		\hline
+		occurrence \newline gravité &1	& 2 & 3 \\ \hline
+		1	&  \cellcolor{green} & B \cellcolor{green} & A \cellcolor{orange} \\ \hline
+		2	& \cellcolor{green}	& E \cellcolor{orange}	& \cellcolor{red} \\ \hline
+		3	& D \cellcolor{orange}	& C	\cellcolor{red}& \cellcolor{red}\\ \hline
+	\end{tabular}
+	\hspace{2cm}
+	\begin{tabular}{|c|c|}
+		\hline
+		Label & Risque \\ \hline
+		A	\cellcolor{orange} &	Communication \\ \hline
+		B	\cellcolor{green} &	Répartition du travail \\ \hline
+		C	\cellcolor{red} &	Ré-employabilité \\ \hline
+		D	\cellcolor{orange} &	Erreur de modélisation \\ \hline
+		E	\cellcolor{orange} &	Risque pandémique \\ \hline
+	\end{tabular}
+	\caption{Matrice de sévérité et labels correspondants}
+\end{table}
