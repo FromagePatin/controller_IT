@@ -1,6 +1,4 @@
-\section{Outils de développement}
-
-\subsection{Analyseur Logique Intégré}
+\subsection{Analyseur Logique Intégré (ILA)}
 L'environnement de développement Xilinx met à disposition une IP appelée ILA pour analyseur logique intégré (Integrated Logic Analyzer).
 Cet outil peut être instancié dans le FPGA et permet de capturer les chronogrammes des signaux souhaités.
 Il est parfaitement adapté pour le debug de l'interface AXI mais peut être connecté à tout autre point d'intérêt.
@@ -19,6 +17,3 @@ Les valeurs des signaux échantillonnées sont ensuite sauvegardées dans la RAM
 L'utilisation de l'ILA n'est possible qu'à condition d'avoir les ressources logiques nécessaires.
 Il est probablement possible de faire varier sa surface d'occupation en déduisant le nombre de sondes et la complexité des réglages lors de l'instanciation.
 N'ayant pas d'informations supplémentaires sur la taille du circuit à tester, nous ferons l'hypothèse la plus optimiste pour laquelle aucun problème d'espace n'est rencontré.
-
-\subsection{Débugueur logiciel}
-%TODO

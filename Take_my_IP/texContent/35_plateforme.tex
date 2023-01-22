@@ -17,26 +17,18 @@ Sans se perdre dans les détails techniques, nous essayerons de confirmer que ce
 La figure \ref{fig:soc} illustre le positionnement du contrôleur d'interruption (notre IP) sur la plateforme SoC.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.72\linewidth]{global_bloc_diagram_zynq.drawio.png}
+    \includegraphics[width=0.80\linewidth]{global_bloc_diagram_zynq.drawio.png}
     \caption{Positionnement de l'IP sur la plateforme SoC.}
     \label{fig:soc}
 \end{figure}
 Elle se place naturellement en bas à droite dans la partie "programmable logic" (PL).
-Son implémentation repose bien sur un ensemble de ressources logiques composé de LUT, bascules, RAM, etc.
+Son implémentation repose bien sur un ensemble de ressources logiques composé de LUTs, bascules, RAM, etc.
 La figure \ref{fig:soc} tirée de la documentation Xilinx \cite{Tech_Man_Xilinx} a été modifiée afin de mettre en avant les éléments en lien avec notre IP.
 Elle n'a pas vocation à être parfaitement exhaustive.
 On retrouve parmi les fonctions clés le "Programmable Logic To Memory Interconnect".
 Il est composé de ports AXI hautes performances fournissant un accès depuis la PL à la DDR et à la mémoire de la puce\footnote{Dans la documentation Xilinx on retrouve le terme on-chip memory (OCM)}.
 Ses quatre ports AXI allant de la PL aux CPUs (Processing System PS) sont configurables en tant qu'interface 32 bits ou 64 bits.
 C'est par cette interface que les échanges entre notre IP et le processeur auront lieu.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.8\linewidth]{figure/inside_IT_controller.png}
-	\caption{Structure du contrôleur d'interruptions compatible AXI4-Lite}
-	\label{fig:modif_IP}
-\end{figure}
-
 La particularité du contrôleur d'interruptions est d'avoir une seconde interface de communication avec les autres IPs.
 Cette dernière est formée de l'ensemble des signaux \texttt{nIT\_xxx} indicateurs d'une requête d'interruption.
 Le terme "les autres IP" fait référence aux IPs "sur mesure" implémentées dans la PL et celle déjà présente dans l'"I/O peripherals" comme le SPI, l'UART, etc.
@@ -45,7 +37,7 @@ Nous pensons, en nous basant sur la documentation \cite{Tech_Man_Xilinx}, qu'il 
 La figure \ref{fig:GIC} illustre le chemin des signaux \texttt{nIT\_xxx} et \texttt{nIT\_CPU} en se basant sur l'architecture du GIC.
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\linewidth]{GIC.drawio.png}
+    \includegraphics[width=0.85\linewidth]{GIC.drawio.png}
     \caption{Chemin des sources d'interruptions d'après l'architecture du GIC.}
     \label{fig:GIC}
 \end{figure}
