@@ -1,0 +1,37 @@
+\section{Retour correction}
+\textbf{Cette partie a été ajoutée au rapport après correction de l'enseignant.}
+
+\subsubsection{Remarques à la classe}
+\emph{Description de l'architecture} : globalement compris. Il faut noter une différence importante entre le protocole vu en E2 et celui AXI4-Lite : il y a alors deux bus de données bidirectionnels.
+
+\gap
+\emph{Activités de vérification} : la vérification comporte la simulation et le test sur prototype. Pour la simulation il faut bien penser que le développement du testeur, avec les signaux AXI à gérer, est à faire et prend du temps. Le test sur prototype suppose de développer le logiciel requis pour contrôler l'IP : il faut aussi vérifier que ce logiciel fonctionne bien : l'outil ILA est alors utile pour s'assurer des échanges sur les bus. Enfin, se pose la question du test sur prototype du fonctionnement, avec les problématiques matérielles qui se posent : ajout de cartes d'extension éventuellement.
+
+\gap
+\emph{Organisation et plannification} : la phase de vérification ne doit pas être négligée, la mise en place du test prenant souvent du temps. Pour deux ingénieurs, les tests peuvent a priori être menés en parallèle (attention à la disponibilité de la carte de prototypage). La génération d'un bitstream prend du temps (et doit souvent être répétée). De façon générale il est bon de prévoir une v1 de l'IP validée sur ses fonctionnalités principales avant de chercher à fixer les aspects plus avancés.
+
+\gap
+\emph{Risques} : les risques se rapportent à chaque phase du processus d'intégration. Par exemple : erreurs de conception détectées en simulation, sur prototype. Défaut de disponibilité de cartes. Non-disponibilité d'un ingénieur. Défaillance ou non disponibilité de la carte de prototypage. Dans tous les cas il s'agit de proposer une replanification du projet.
+
+\gap
+
+\subsubsection{Notation du rapport}
+\noindent
+\emph{Forme du rapport orthographe, présentation, forme (4 pt)}\\
+\textbf{4} Très bien\\
+\noindent
+\emph{Description de l'architecture complète du soc et interne de l'IP (4pt)}\\
+\textbf{4} Très bonne explication du SOC et  de votre IP\\
+\noindent
+\emph{Description des activités de vérification (simulation/test)(4pt)}\\
+\textbf{3} Vous n'évoquez pas assez pas la partie SW requise pour l'intégration de votre IP\\
+\noindent
+\emph{Estimation effort et Organisation temporelle (4pt)}\\
+\textbf{3} Planification intéressante même si vous ne précisez pas comment vous quantifiez les durées des tâches\\
+\noindent
+\emph{Identification des risques (4pt)} \\
+\textbf{3} Bien, même si d'autres risques peuvent être pris en compte (délais phases de test)\\
+
+\gap
+Total 17/20
+
